@@ -1,0 +1,28 @@
+---
+import { Image } from 'astro:assets';
+import consoleShot from '../../assets/work/ulpf-console.png';
+---
+
+<figure>
+  <Image
+    src={consoleShot}
+    alt="ULPF operator console: 1,180 events received, 1,174 normalised to OCSF (99.49% for this session), chain sequence 1,001, and a live table of Snort, Proxifier, Sendmail, Apache and iptables events."
+    widths={[700, 1100, 1440]}
+    sizes="(min-width: 1100px) min(1100px, 76vw), calc(100vw - 40px)"
+    loading="lazy"
+  />
+  <figcaption>ULPF’s operator console replaying public capture data. Screenshot by the ULPF contributors, Apache-2.0.</figcaption>
+</figure>
+
+<style>
+  figure :global(img) {
+    width: 100%;
+    border-radius: 4px;
+  }
+
+  figcaption {
+    margin-top: 12px;
+    font-size: var(--step-small);
+    color: var(--muted);
+  }
+</style>

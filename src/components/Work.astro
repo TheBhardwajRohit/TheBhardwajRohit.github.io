@@ -1,0 +1,204 @@
+---
+import { Image } from 'astro:assets';
+import CaseStudy from './CaseStudy.astro';
+import LinkLensFigure from './figures/LinkLensFigure.astro';
+import EchelonFigure from './figures/EchelonFigure.astro';
+import UlpfFigure from './figures/UlpfFigure.astro';
+import { cases, ledger } from '../data/site.ts';
+import linklensReport from '../assets/work/linklens-report.jpg';
+import echelonPreview from '../assets/work/echelon-preview.png';
+import ulpfConsole from '../assets/work/ulpf-console.png';
+
+// Hover previews repeat pictures shown in full below, so they are decorative here.
+const previews = { linklens: linklensReport, echelon: echelonPreview, ulpf: ulpfConsole } as const;
+
+const figures = { linklens: LinkLensFigure, echelon: EchelonFigure, ulpf: UlpfFigure } as const;
+---
+
+<section class="section frame" id="work" aria-labelledby="work-title" tabindex="-1">
+  <div class="col">
+    <h2 id="work-title" class="section-title" data-reveal>Work</h2>
+    <ol class="ledger" data-reveal style="--i: 1">
+      {
+        ledger.map((row) => {
+          const inner = (
+            <>
+              <span class="l-name">{row.name}</span>
+              <span class="l-kind">{row.kind}</span>
+              <span class="l-year data">{row.year}</span>
+            </>
+          );
+          return (
+            <li>
+              {row.href ? (
+                <a href={row.href} {...(row.external ? { 'data-external': '', rel: 'noopener' } : {})}>
+                  {inner}
+                </a>
+              ) : (
+                <div class="l-static">{inner}</div>
+              )}
+              {row.preview && (
+                <Image
+                  class="l-preview"
+                  src={previews[row.preview]}
+                  alt=""
+                  width={600}
+                  height={375}
+                  fit="cover"
+                  position="top"
+                  loading="lazy"
+                  aria-hidden="true"
+                />
+              )}
+            </li>
+          );
+        })
+      }
+    </ol>
+  </div>
+
+  {
+    cases.map((c) => {
+      const Figure = figures[c.id as keyof typeof figures];
+      return Figure ? (
+        <CaseStudy study={c}>
+          <Figure />
+        </CaseStudy>
+      ) : (
+        <CaseStudy study={c} />
+      );
+    })
+  }
+</section>
+
+<style>
+  .ledger {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ledger li {
+    position: relative;
+  }
+
+  .ledger a,
+  .l-static {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    align-items: baseline;
+    gap: 16px;
+    min-height: 48px;
+    padding-block: 12px;
+    text-decoration: none;
+    transition: color 160ms var(--ease);
+  }
+
+  .l-name {
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 160ms var(--ease);
+  }
+
+  .ledger a:hover .l-name,
+  .ledger a:focus-visible .l-name {
+    text-decoration-color: currentColor;
+  }
+
+  .l-kind {
+    color: var(--muted);
+    font-size: var(--step-small);
+  }
+
+  .l-year {
+    color: var(--muted);
+  }
+
+  .l-static {
+    color: var(--muted);
+  }
+
+  .l-static .l-name {
+    font-weight: 400;
+    text-decoration: none;
+  }
+
+  .ledger a[data-external]::after {
+    content: none;
+  }
+
+  .ledger a[data-external] .l-name::after {
+    content: '\2197';
+    margin-left: 0.25em;
+    font-size: 0.8em;
+    font-weight: 400;
+  }
+
+  /* Hovering one row quiets the others. */
+  @media (hover: hover) {
+    .ledger:has(a:hover) a:not(:hover),
+    .ledger:has(a:hover) .l-static {
+      color: var(--muted);
+    }
+
+    .ledger:has(a:hover) a:not(:hover) .l-kind,
+    .ledger:has(a:hover) a:not(:hover) .l-year {
+      opacity: 0.6;
+    }
+  }
+
+  .l-preview {
+    display: none;
+  }
+
+  @media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+    .l-preview {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: calc(100% + 64px);
+      width: 300px;
+      height: auto;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 3px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 180ms var(--ease), transform 220ms var(--ease);
+      pointer-events: none;
+    }
+
+    .ledger li:hover .l-preview,
+    .ledger li:focus-within .l-preview {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .ledger a,
+    .l-static {
+      grid-template-columns: 1fr auto;
+      row-gap: 2px;
+      min-height: 52px;
+    }
+
+    .l-kind {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .l-year {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .l-preview {
+      transition: none;
+    }
+  }
+</style>

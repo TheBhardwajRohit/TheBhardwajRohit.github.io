@@ -1,0 +1,425 @@
+---
+import { checkLink, VERDICT_WORDS, type LinkCheck } from '../lib/linkcheck.ts';
+
+// Real examples, never clickable. The first one is rendered at build time so the panel is
+// complete without JavaScript.
+const examples = [
+  { label: 'sbi-kyc-update.xyz/login', value: 'http://sbi-kyc-update.xyz/login' },
+  { label: 'аpple.com/signin', value: 'https://аpple.com/signin' },
+  { label: 'onlinesbi.sbi', value: 'https://www.onlinesbi.sbi/' },
+  { label: '192.168.1.1/login', value: 'http://192.168.1.1/login' },
+];
+
+const initial = checkLink(examples[0].value) as LinkCheck;
+const all = [...initial.reasons, ...initial.goodSigns];
+---
+
+<section class="lc" id="check" data-ui aria-labelledby="lc-title">
+  <div class="lc-head">
+    <h2 id="lc-title" class="lc-title">Check a link</h2>
+    <p class="lc-sub">LinkLens’s link rules, running in this page</p>
+  </div>
+
+  <form class="lc-form" novalidate>
+    <label class="sr-only" for="lc-input">Link to check</label>
+    <input
+      id="lc-input"
+      class="lc-input data"
+      name="link"
+      type="text"
+      inputmode="url"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      maxlength="2048"
+      placeholder="Paste a link"
+      value={examples[0].value}
+    />
+    <button class="lc-go" type="submit">Check</button>
+  </form>
+
+  <div class="lc-examples">
+    <span class="lc-try" id="lc-try">Try</span>
+    <ul aria-labelledby="lc-try">
+      {
+        examples.map((ex, i) => (
+          <li>
+            <button type="button" class="lc-chip data" data-example={ex.value} aria-pressed={i === 0 ? 'true' : 'false'}>
+              {ex.label}
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <div class="lc-result" data-verdict={initial.verdict} aria-live="polite" aria-atomic="true">
+    <div class="lc-verdict">
+      <p class="lc-score"><span class="lc-num" data-score>{initial.score}</span><span class="lc-of">/100</span></p>
+      <p class="lc-word" data-word>{VERDICT_WORDS[initial.verdict]}</p>
+    </div>
+    <div class="lc-scale" aria-hidden="true">
+      <span class="band safe"></span><span class="band warn"></span><span class="band danger"></span>
+      <span class="marker" data-marker style={`--at: ${initial.score}%`}></span>
+    </div>
+    <p class="lc-link data" data-defanged>{initial.defanged}</p>
+    <p class="lc-reads" data-reads hidden></p>
+    <p class="lc-error" data-error hidden></p>
+    <ol class="lc-reasons" data-reasons>
+      {
+        all.map((r) => (
+          <li class={r.points < 0 ? 'good' : undefined}>
+            <span class="pts data">{r.points > 0 ? `+${r.points}` : r.points}</span>
+            <span>{r.text}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <p class="lc-note">
+    Nothing is fetched and the link never leaves this page. A full LinkLens scan also opens the page in a sandbox,
+    checks six blacklists and looks up who runs it. <a href="#linklens">How LinkLens works</a>
+  </p>
+  <noscript><p class="lc-note">The check needs JavaScript. The result above is the first example.</p></noscript>
+</section>
+
+<style>
+  .lc {
+    position: relative;
+    background: var(--surface);
+    border-radius: 6px;
+    padding: clamp(20px, 2.4vw, 28px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .lc-head {
+    display: grid;
+    gap: 2px;
+  }
+
+  .lc-title {
+    font-size: var(--step-lead);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .lc-sub {
+    color: var(--muted);
+    font-size: var(--step-small);
+  }
+
+  .lc-form {
+    display: flex;
+    gap: 8px;
+  }
+
+  .lc-input {
+    flex: 1;
+    min-width: 0;
+    min-height: 48px;
+    padding: 0 14px;
+    font-size: 0.9375rem;
+    border: 1px solid var(--rule); /* taste-skill-ignore: 1px rule by brief, form field and chips */
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--ink);
+    transition: border-color 160ms var(--ease);
+  }
+
+  .lc-input:hover {
+    border-color: var(--muted);
+  }
+
+  .lc-input:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+    border-color: transparent;
+  }
+
+  .lc-go {
+    min-height: 48px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--bg);
+    font-weight: 500;
+    transition: opacity 160ms var(--ease), transform 120ms var(--ease);
+  }
+
+  .lc-go:hover {
+    opacity: 0.86;
+  }
+
+  .lc-go:active {
+    transform: translateY(1px);
+  }
+
+  .lc-examples {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 10px;
+    font-size: var(--step-small);
+  }
+
+  .lc-try {
+    color: var(--muted);
+  }
+
+  .lc-examples ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .lc-chip {
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid var(--rule); /* taste-skill-ignore: 1px rule by brief, form field and chips */
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--ink);
+    font-size: 0.8125rem;
+    transition: background-color 160ms var(--ease), border-color 160ms var(--ease);
+  }
+
+  .lc-chip:hover {
+    border-color: var(--muted);
+  }
+
+  .lc-chip[aria-pressed='true'] {
+    background: var(--bg);
+    border-color: var(--ink);
+  }
+
+  .lc-chip[aria-pressed='true']:hover {
+    border-color: var(--muted);
+  }
+
+  .lc-result {
+    --tone: var(--warn);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule); /* taste-skill-ignore: 1px rule by brief, interface fragment */
+  }
+
+  .lc-result[data-verdict='safe'] {
+    --tone: var(--safe);
+  }
+
+  .lc-result[data-verdict='dangerous'] {
+    --tone: var(--danger);
+  }
+
+  .lc-result[data-verdict='error'] .lc-verdict,
+  .lc-result[data-verdict='error'] .lc-scale,
+  .lc-result[data-verdict='error'] .lc-link,
+  .lc-result[data-verdict='error'] .lc-reasons {
+    display: none;
+  }
+
+  .lc-verdict {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .lc-score {
+    font-size: var(--step-head);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lc-of {
+    font-size: var(--step-small);
+    color: var(--muted);
+    letter-spacing: 0;
+    margin-left: 4px;
+  }
+
+  .lc-word {
+    font-weight: 500;
+    color: var(--tone);
+  }
+
+  .lc-scale {
+    position: relative;
+    display: grid;
+    grid-template-columns: 31fr 39fr 30fr;
+    gap: 3px;
+    height: 6px;
+  }
+
+  .band {
+    border-radius: 1px;
+    opacity: 0.35;
+  }
+
+  .band.safe {
+    background: var(--safe);
+  }
+
+  .band.warn {
+    background: var(--warn);
+  }
+
+  .band.danger {
+    background: var(--danger);
+  }
+
+  .marker {
+    position: absolute;
+    top: -5px;
+    left: clamp(0%, var(--at), 100%);
+    width: 2px;
+    height: 16px;
+    background: var(--ink);
+    transform: translateX(-1px);
+    transition: left 420ms var(--ease);
+  }
+
+  .lc-link {
+    overflow-wrap: anywhere;
+    color: var(--ink);
+  }
+
+  .lc-reads,
+  .lc-error {
+    font-size: var(--step-small);
+  }
+
+  .lc-error {
+    color: var(--danger);
+  }
+
+  .lc-reasons {
+    display: grid;
+    gap: 0;
+  }
+
+  .lc-reasons :global(li) {
+    display: grid;
+    grid-template-columns: 3.25rem 1fr;
+    gap: 10px;
+    padding: 8px 0;
+    border-top: 1px solid var(--rule); /* taste-skill-ignore: 1px rule by brief, interface fragment */
+    font-size: 0.9375rem;
+    line-height: 1.4;
+  }
+
+  .lc-reasons :global(li:first-child) {
+    border-top: 0;
+  }
+
+  .lc-reasons :global(li.none) {
+    display: block;
+    color: var(--muted);
+  }
+
+  .lc-reasons :global(.pts) {
+    color: var(--tone);
+    font-weight: 400;
+    padding-top: 1px;
+  }
+
+  .lc-reasons :global(li.good .pts) {
+    color: var(--safe);
+  }
+
+  .lc-note {
+    color: var(--muted);
+    font-size: var(--step-small);
+    line-height: 1.5;
+  }
+
+  .lc-note a {
+    color: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marker {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { checkLink, VERDICT_WORDS } from '../lib/linkcheck.ts';
+
+  const root = document.getElementById('check');
+  const form = root?.querySelector<HTMLFormElement>('.lc-form');
+  const input = root?.querySelector<HTMLInputElement>('#lc-input');
+  const result = root?.querySelector<HTMLElement>('.lc-result');
+
+  if (root && form && input && result) {
+    const el = <T extends HTMLElement>(sel: string) => result.querySelector<T>(sel)!;
+    const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-example]')];
+
+    const render = () => {
+      const r = checkLink(input.value);
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.example === input.value.trim())));
+      const error = el<HTMLElement>('[data-error]');
+      if (!r.ok) {
+        result.dataset.verdict = 'error';
+        error.textContent = r.error;
+        error.hidden = false;
+        el<HTMLElement>('[data-reads]').hidden = true;
+        return;
+      }
+      error.hidden = true;
+      result.dataset.verdict = r.verdict;
+      el<HTMLElement>('[data-score]').textContent = String(r.score);
+      el<HTMLElement>('[data-word]').textContent = VERDICT_WORDS[r.verdict];
+      el<HTMLElement>('[data-marker]').style.setProperty('--at', `${r.score}%`);
+      el<HTMLElement>('[data-defanged]').textContent = r.defanged;
+      const reads = el<HTMLElement>('[data-reads]');
+      reads.hidden = !r.unicodeHost;
+      reads.textContent = r.unicodeHost ? `The address reads as “${r.unicodeHost}”, but the browser sees ${r.host}.` : '';
+
+      const list = el<HTMLOListElement>('[data-reasons]');
+      const rows = [...r.reasons, ...r.goodSigns];
+      list.replaceChildren(
+        ...(rows.length
+          ? rows.map((reason) => {
+              const li = document.createElement('li');
+              if (reason.points < 0) li.className = 'good';
+              const pts = document.createElement('span');
+              pts.className = 'pts data';
+              pts.textContent = reason.points > 0 ? `+${reason.points}` : String(reason.points);
+              const text = document.createElement('span');
+              text.textContent = reason.text;
+              li.append(pts, text);
+              return li;
+            })
+          : [
+              Object.assign(document.createElement('li'), {
+                className: 'none',
+                textContent: 'No warning signs in the link itself. That alone does not make the page safe.',
+              }),
+            ]),
+      );
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      render();
+    });
+
+    chips.forEach((chip) =>
+      chip.addEventListener('click', () => {
+        input.value = chip.dataset.example ?? '';
+        render();
+      }),
+    );
+
+    render();
+  }
+</script>

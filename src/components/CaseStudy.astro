@@ -1,0 +1,251 @@
+---
+import type { CaseStudy } from '../data/site.ts';
+
+interface Props {
+  study: CaseStudy;
+}
+
+const { study } = Astro.props;
+const titleId = `${study.id}-title`;
+const hasSide = study.evidence.length > 0 || study.links.length > 0 || Boolean(study.note);
+---
+
+<article class="case" id={study.id} aria-labelledby={titleId} tabindex="-1">
+  <header class="case-head" data-reveal>
+    <h3 id={titleId} class="case-title">{study.name}</h3>
+    <p class="case-kind">{study.kind}</p>
+    <dl class="case-meta">
+      {
+        study.meta.map((m) => (
+          <div>
+            <dt>{m.term}</dt>
+            <dd class="data">{m.detail}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </header>
+
+  <div class="case-body">
+    <p data-reveal><strong>Problem.</strong> {study.problem}</p>
+    <p data-reveal style="--i: 1"><strong>Approach.</strong> {study.approach}</p>
+    <p data-reveal style="--i: 2"><strong>Result.</strong> {study.result}</p>
+  </div>
+
+  {
+    hasSide && (
+      <aside class="case-side" aria-label={`${study.name}: evidence and links`} data-reveal style="--i: 1">
+        {study.evidence.length > 0 && (
+          <table class="evidence">
+            <caption>Evidence, each linked to the file that measured it</caption>
+            <thead>
+              <tr>
+                <th scope="col">Measure</th>
+                <th scope="col" class="num">Value</th>
+                <th scope="col" class="src">Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              {study.evidence.map((e) => (
+                <tr>
+                  <td>{e.measure}</td>
+                  <td class="num data">{e.value}</td>
+                  <td class="src">
+                    <a href={e.source.href} data-external rel="noopener" class="data">
+                      {e.source.label}
+                    </a>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        {study.links.length > 0 && (
+          <ul class="case-links">
+            {study.links.map((l) => (
+              <li>
+                <a href={l.href} data-external rel="noopener">
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+        {study.note && <p class="note">{study.note}</p>}
+      </aside>
+    )
+  }
+
+  {Astro.slots.has('default') && <div class="case-figure" data-reveal><slot /></div>}
+</article>
+
+<style>
+  .case {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'head' 'body' 'fig' 'side';
+    row-gap: clamp(28px, 3vw, 40px);
+    margin-left: var(--indent);
+    max-width: var(--column);
+    padding-top: clamp(96px, 10vw, 152px);
+  }
+
+  .case-head {
+    grid-area: head;
+    display: grid;
+    gap: 4px;
+  }
+
+  .case-body {
+    grid-area: body;
+    display: grid;
+    gap: 1em;
+  }
+
+  .case-side {
+    grid-area: side;
+    display: grid;
+    gap: 28px;
+    align-content: start;
+  }
+
+  .case-figure {
+    grid-area: fig;
+    margin-top: clamp(8px, 1vw, 16px);
+  }
+
+  @media (min-width: 1100px) {
+    .case {
+      grid-template-columns: minmax(0, var(--column)) minmax(300px, 1fr);
+      grid-template-areas:
+        'head .'
+        'body side'
+        'fig fig';
+      column-gap: clamp(48px, 5vw, 88px);
+      max-width: none;
+    }
+  }
+
+  .case-title {
+    font-size: var(--step-head);
+  }
+
+  .case-kind {
+    font-size: var(--step-lead);
+    letter-spacing: -0.02em;
+    color: var(--muted);
+  }
+
+  .case-meta {
+    display: grid;
+    gap: 6px;
+    margin-top: 20px;
+    font-size: var(--step-small);
+  }
+
+  .case-meta div {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 12px;
+    align-items: baseline;
+  }
+
+  .case-meta dt {
+    color: var(--muted);
+  }
+
+  .case-meta dd {
+    line-height: 1.5;
+  }
+
+  .case-body strong {
+    font-weight: 500;
+  }
+
+  .evidence {
+    font-size: var(--step-small);
+  }
+
+  .evidence caption {
+    text-align: left;
+    color: var(--muted);
+    padding-bottom: 10px;
+  }
+
+  .evidence th {
+    font-weight: 400;
+    color: var(--muted);
+    text-align: left;
+    padding: 8px 12px 8px 0;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .evidence td {
+    padding: 10px 12px 10px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: baseline;
+  }
+
+  .evidence .num {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .evidence td.num {
+    color: var(--ink);
+  }
+
+  .evidence .src {
+    padding-left: 12px;
+    padding-right: 0;
+    white-space: nowrap;
+  }
+
+  .case-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 24px;
+  }
+
+  .case-links a {
+    display: inline-block;
+    padding-block: 6px;
+    font-weight: 500;
+  }
+
+  .note {
+    color: var(--muted);
+  }
+
+  @media (max-width: 560px) {
+    .evidence thead {
+      display: none;
+    }
+
+    .evidence tr {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2px 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .evidence td {
+      border: 0;
+      padding: 0;
+    }
+
+    .evidence td:first-child {
+      grid-column: 1 / -1;
+    }
+
+    .evidence td.num {
+      text-align: left;
+    }
+
+    .evidence .src {
+      padding-left: 0;
+      text-align: right;
+    }
+  }
+</style>

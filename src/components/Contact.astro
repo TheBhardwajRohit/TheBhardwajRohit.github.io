@@ -1,0 +1,115 @@
+---
+import { person } from '../data/site.ts';
+---
+
+<section class="section frame" id="contact" aria-labelledby="contact-title" tabindex="-1">
+  <div class="contact">
+    <div class="ask">
+      <h2 id="contact-title" class="section-title" data-reveal>Contact</h2>
+      <p class="lead" data-reveal style="--i: 1">Write to me about security roles, internships or research.</p>
+    </div>
+    <div class="reach" data-reveal style="--i: 2">
+      <div class="email">
+        <a class="address" href={`mailto:${person.email}`}>{person.email}</a>
+        <button type="button" class="copy" data-copy={person.email}>Copy</button>
+        <span class="copied" role="status" aria-live="polite"></span>
+      </div>
+      <ul class="elsewhere">
+        <li><a href={person.linkedin} data-external rel="noopener">LinkedIn</a></li>
+        <li><a href={person.github} data-external rel="noopener">GitHub</a></li>
+        <li><a href="/resume/">Resume</a></li>
+      </ul>
+      <p class="where small muted">{person.city}. IST, UTC+5:30.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    margin-left: var(--indent);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px 64px;
+  }
+
+  .ask .lead {
+    max-width: 22em;
+  }
+
+  .reach {
+    display: grid;
+    gap: 18px;
+    align-content: start;
+  }
+
+  .email {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 16px;
+  }
+
+  .address {
+    font-size: var(--step-lead);
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+  }
+
+  .copy {
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--rule); /* taste-skill-ignore: 1px rule by brief, small control */
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--ink);
+    font-size: var(--step-small);
+    transition: border-color 160ms var(--ease), background-color 160ms var(--ease);
+  }
+
+  .copy:hover {
+    border-color: var(--muted);
+    background: var(--surface);
+  }
+
+  .copied {
+    font-size: var(--step-small);
+    color: var(--muted);
+  }
+
+  .elsewhere {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+  }
+
+  .elsewhere a {
+    display: inline-block;
+    padding-block: 6px;
+    font-weight: 500;
+  }
+
+  @media (min-width: 1100px) {
+    .contact {
+      grid-template-columns: minmax(0, var(--column)) minmax(0, 1fr);
+      align-items: end;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((button) => {
+    const status = button.parentElement?.querySelector<HTMLElement>('.copied');
+    button.addEventListener('click', async () => {
+      const text = button.dataset.copy ?? '';
+      try {
+        await navigator.clipboard.writeText(text);
+        if (status) status.textContent = 'Copied';
+      } catch {
+        if (status) status.textContent = 'Select the address to copy it';
+      }
+      window.setTimeout(() => {
+        if (status) status.textContent = '';
+      }, 2400);
+    });
+  });
+</script>

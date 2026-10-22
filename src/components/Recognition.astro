@@ -1,0 +1,129 @@
+---
+import { recognition } from '../data/site.ts';
+---
+
+<section class="section frame" id="recognition" aria-labelledby="recognition-title" tabindex="-1">
+  <div class="recog">
+    <h2 id="recognition-title" class="section-title" data-reveal>Recognition</h2>
+    <table class="awards" data-reveal style="--i: 1">
+      <caption class="sr-only">Competition results and recognition</caption>
+      <thead class="sr-only">
+        <tr>
+          <th scope="col">Year</th>
+          <th scope="col">Event</th>
+          <th scope="col">Organiser</th>
+          <th scope="col">Result</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          recognition.map((r, i) => {
+            const firstOfYear = i === 0 || recognition[i - 1].year !== r.year;
+            return (
+              <tr class:list={{ 'new-year': firstOfYear && i > 0 }}>
+                <td class="year data">{firstOfYear ? r.year : <span class="sr-only">{r.year}</span>}</td>
+                <th scope="row" class="event">
+                  {r.event}
+                </th>
+                <td class="org">{r.organiser}</td>
+                <td class="result">
+                  {r.result}
+                  {r.href && (
+                    <>
+                      {' '}
+                      <a href={r.href} data-external rel="noopener" class="verify">
+                        on CTFtime
+                      </a>
+                    </>
+                  )}
+                </td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .recog {
+    margin-left: var(--indent);
+  }
+
+  .awards {
+    font-size: var(--step-small);
+  }
+
+  .awards tbody tr:nth-child(odd) {
+    background: var(--surface);
+  }
+
+  .awards td,
+  .awards th {
+    padding: 14px 16px 14px 0;
+    vertical-align: baseline;
+    text-align: left;
+  }
+
+  .awards td:first-child {
+    padding-left: 14px;
+    width: 4.5rem;
+  }
+
+  .awards .event {
+    font-weight: 500;
+    font-size: var(--step-body);
+    width: 36%;
+  }
+
+  .awards .org {
+    width: 22%;
+  }
+
+  .awards .org {
+    color: var(--muted);
+  }
+
+  .awards .result {
+    padding-right: 14px;
+  }
+
+  .awards tr.new-year td,
+  .awards tr.new-year th {
+    padding-top: 30px;
+  }
+
+  @media (max-width: 760px) {
+    .awards,
+    .awards tbody,
+    .awards tr {
+      display: block;
+    }
+
+    .awards tr {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2px;
+      padding: 14px;
+    }
+
+    .awards td,
+    .awards th,
+    .awards td:first-child,
+    .awards tr.new-year td,
+    .awards tr.new-year th {
+      padding: 0;
+      width: auto;
+    }
+
+    .awards .year:empty {
+      display: none;
+    }
+
+    .awards .year {
+      font-size: var(--step-small);
+      color: var(--muted);
+    }
+  }
+</style>
