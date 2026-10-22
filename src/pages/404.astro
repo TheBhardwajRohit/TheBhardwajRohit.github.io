@@ -1,0 +1,92 @@
+---
+import Base from '../layouts/Base.astro';
+import { person } from '../data/site.ts';
+---
+
+<Base
+  title="Not found, Rohit Bhardwaj"
+  description="There is no page at this address on Rohit Bhardwaj’s site. Try the home page, the work or the resume."
+  noindex
+>
+  <section class="frame missing" aria-labelledby="missing-title">
+    <div class="col">
+      <h1 id="missing-title" class="title">Nothing at this address.</h1>
+      <div class="report" data-ui>
+        <p class="data where" data-where>hxxps://thebhardwajrohit[.]github[.]io/…</p>
+        <ul>
+          <li><span class="data pts">404</span><span>The page you asked for does not exist on this site.</span></li>
+          <li><span class="data pts">0</span><span>Nothing else looks wrong. The link was probably mistyped or is out of date.</span></li>
+        </ul>
+      </div>
+      <p class="next">Where to go instead:</p>
+      <ul class="links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/#work">Work</a></li>
+        <li><a href="/resume/">Resume</a></li>
+        <li><a href={`mailto:${person.email}`}>Email</a></li>
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .missing {
+    padding-top: clamp(64px, 14vh, 160px);
+  }
+
+  .title {
+    font-size: var(--step-head);
+    margin-bottom: 32px;
+  }
+
+  .report {
+    background: var(--surface);
+    border-radius: 6px;
+    padding: 20px 24px;
+  }
+
+  .where {
+    overflow-wrap: anywhere;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule); /* taste-skill-ignore: 1px rule by brief, interface fragment */
+  }
+
+  .report li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 12px;
+    padding-top: 12px;
+    font-size: var(--step-small);
+  }
+
+  .pts {
+    color: var(--muted);
+  }
+
+  .next {
+    margin-top: 40px;
+    color: var(--muted);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin-top: 8px;
+  }
+
+  .links a {
+    display: inline-block;
+    padding-block: 8px;
+    font-weight: 500;
+  }
+</style>
+
+<script>
+  // Show the address that was asked for, defanged like a LinkLens report.
+  const where = document.querySelector('[data-where]');
+  if (where) {
+    const { protocol, host, pathname, search } = window.location;
+    where.textContent = `${protocol.replace(/^http/, 'hxxp')}//${host.replace(/\./g, '[.]')}${pathname}${search}`;
+  }
+</script>

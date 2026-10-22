@@ -1,0 +1,85 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import preview from '../assets/resume-preview.png';
+import { person } from '../data/site.ts';
+---
+
+<Base
+  title="Resume, Rohit Bhardwaj"
+  description="Resume of Rohit Bhardwaj, final-year B.Tech Cyber Security student at Rashtriya Raksha University. One page, PDF."
+>
+  <section class="frame resume" aria-labelledby="resume-title">
+    <div class="col">
+      <h1 id="resume-title" class="title">Resume</h1>
+      <p class="muted">
+        One page, PDF, updated <time datetime={person.resume.updatedIso}>{person.resume.updated}</time>.
+      </p>
+      <div class="actions">
+        <a class="button" href={person.resume.href} download={person.resume.file}>Download PDF</a>
+        <a class="text-link" href={person.resume.href} target="_blank" rel="noopener">Open the PDF</a>
+      </div>
+    </div>
+    <figure class="sheet wide">
+      <a href={person.resume.href} target="_blank" rel="noopener" aria-label="Open the resume PDF">
+        <Image
+          src={preview}
+          alt="Page one of Rohit Bhardwaj’s resume: education, projects, honours, work and leadership experience."
+          widths={[600, 900, 1489]}
+          sizes="(min-width: 900px) 820px, calc(100vw - 40px)"
+          loading="eager"
+        />
+      </a>
+      <figcaption class="small muted">A picture of the PDF. The PDF itself has selectable text.</figcaption>
+    </figure>
+  </section>
+</Base>
+
+<style>
+  .resume {
+    padding-top: clamp(48px, 8vh, 96px);
+  }
+
+  .title {
+    font-size: var(--step-head);
+    margin-bottom: 8px;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
+    margin-top: 28px;
+  }
+
+  .sheet {
+    margin-top: 48px;
+  }
+
+  .sheet a {
+    display: block;
+    background: #ffffff;
+    border-radius: 4px;
+    transition: transform 200ms var(--ease);
+  }
+
+  .sheet a:hover {
+    transform: translateY(-2px);
+  }
+
+  .sheet :global(img) {
+    width: 100%;
+    border-radius: 4px;
+  }
+
+  figcaption {
+    margin-top: 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sheet a {
+      transition: none;
+    }
+  }
+</style>
