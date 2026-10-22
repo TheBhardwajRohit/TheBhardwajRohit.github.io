@@ -1,0 +1,513 @@
+{
+ "_source": "Output of LinkLens analyze_link + link_reasons + reputation_reasons (commit 367f20c, no Tranco list loaded), generated 2026-10-22",
+ "cases": [
+  {
+   "url": "http://www.onlinesbi.sbi/",
+   "reasons": [],
+   "good": [
+    [
+     "This is the real website of SBI.",
+     -40
+    ]
+   ]
+  },
+  {
+   "url": "http://onlinesbi.kyc-update.example/verify",
+   "reasons": [
+    [
+     "The address puts \"onlinesbi\" in front of an unrelated domain, imitating SBI.",
+     30
+    ],
+    [
+     "The link uses words scammers like: kyc, update, verify.",
+     12
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "https://paypa1.example/signin",
+   "reasons": [
+    [
+     "The link uses words scammers like: signin.",
+     4
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "https://xn--mazon-3ve.example/order",
+   "reasons": [
+    [
+     "The name uses special characters: it really reads \"аmazon.example\".",
+     10
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "https://flipkrat.com/",
+   "reasons": [
+    [
+     "The address is one or two letters away from \"flipkart\", imitating Flipkart.",
+     35
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://parivahan-echallan-pay.example/challan/pay",
+   "reasons": [
+    [
+     "The address puts \"parivahan\" in front of an unrelated domain, imitating Parivahan (e-Challan).",
+     30
+    ],
+    [
+     "The link uses words scammers like: challan.",
+     4
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://claim-reward.xyz/",
+   "reasons": [
+    [
+     "It uses the .xyz ending, which scammers use often.",
+     8
+    ],
+    [
+     "The link uses words scammers like: claim, reward.",
+     8
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "https://hdfc-netbanking.github.io/",
+   "reasons": [
+    [
+     "The address puts \"hdfc\" in front of an unrelated domain, imitating HDFC Bank.",
+     30
+    ],
+    [
+     "The page sits on a free hosting service (github.io), where anyone can make a site.",
+     10
+    ],
+    [
+     "The link uses words scammers like: netbanking.",
+     4
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://192.168.1.1/login",
+   "reasons": [
+    [
+     "The link uses a bare IP address instead of a name.",
+     20
+    ],
+    [
+     "The link uses words scammers like: login.",
+     4
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://www.example.com@198.51.100.7/",
+   "reasons": [
+    [
+     "The link uses a bare IP address instead of a name.",
+     20
+    ],
+    [
+     "The link hides its real destination after an @ sign.",
+     15
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://example.com:8080/a",
+   "reasons": [
+    [
+     "The link uses an unusual port (8080).",
+     8
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://example.com/a//http://evil.example",
+   "reasons": [
+    [
+     "The link has a hidden second address inside it.",
+     5
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "https://bit.ly/3abc",
+   "reasons": [
+    [
+     "The link was shortened, which hides where it really goes.",
+     5
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://xk7qz9vbt2mwq.example/",
+   "reasons": [],
+   "good": []
+  },
+  {
+   "url": "http://xk7qz9vbt2mwq.com/",
+   "reasons": [
+    [
+     "The name looks randomly generated.",
+     8
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://example.com",
+   "reasons": [],
+   "good": []
+  },
+  {
+   "url": "https://github.com/TheBhardwajRohit",
+   "reasons": [],
+   "good": []
+  },
+  {
+   "url": "https://en.wikipedia.org/wiki/Phishing",
+   "reasons": [],
+   "good": []
+  },
+  {
+   "url": "http://malware.testing.google.test/testing/malware/",
+   "reasons": [
+    [
+     "The address puts \"google\" in front of an unrelated domain, imitating Google.",
+     30
+    ],
+    [
+     "The address has many layers of subdomains.",
+     8
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://sbi-kyc-update.xyz/login",
+   "reasons": [
+    [
+     "The address adds extra words around \"sbi\", imitating SBI.",
+     25
+    ],
+    [
+     "The link uses words scammers like: kyc, login, update.",
+     12
+    ],
+    [
+     "It uses the .xyz ending, which scammers use often.",
+     8
+    ],
+    [
+     "The name has several hyphens, like many scam domains.",
+     5
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://secure-hdfcbank-login.com/netbanking",
+   "reasons": [
+    [
+     "The address adds extra words around \"hdfcbank\", imitating HDFC Bank.",
+     25
+    ],
+    [
+     "The link uses words scammers like: login, netbanking, secure.",
+     12
+    ],
+    [
+     "The name has several hyphens, like many scam domains.",
+     5
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "https://incometax.gov.in/iec/foportal/",
+   "reasons": [],
+   "good": [
+    [
+     "This is the real website of Income Tax Department.",
+     -40
+    ]
+   ]
+  },
+  {
+   "url": "http://india-post-parcel.top/track?id=1",
+   "reasons": [
+    [
+     "It uses the .top ending, which scammers use often.",
+     8
+    ],
+    [
+     "The name has several hyphens, like many scam domains.",
+     5
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://parivahan-echallan.in/pay-fine",
+   "reasons": [
+    [
+     "The address adds extra words around \"parivahan\", imitating Parivahan (e-Challan).",
+     25
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://amazon-prize-winner.shop/claim",
+   "reasons": [
+    [
+     "The address adds extra words around \"amazon\", imitating Amazon.",
+     25
+    ],
+    [
+     "The link uses words scammers like: claim, prize, winner.",
+     12
+    ],
+    [
+     "It uses the .shop ending, which scammers use often.",
+     8
+    ],
+    [
+     "The name has several hyphens, like many scam domains.",
+     5
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://paytm-kyc.co.in/update",
+   "reasons": [
+    [
+     "The address adds extra words around \"paytm\", imitating Paytm.",
+     25
+    ],
+    [
+     "The link uses words scammers like: kyc, update.",
+     8
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://login.microsoftonline.com.verify-account.info/",
+   "reasons": [
+    [
+     "The address puts \"microsoftonline\" in front of an unrelated domain, imitating Microsoft.",
+     30
+    ],
+    [
+     "The link uses words scammers like: account, login, verify.",
+     12
+    ],
+    [
+     "It uses the .info ending, which scammers use often.",
+     8
+    ],
+    [
+     "The address has many layers of subdomains.",
+     8
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://apple.com-icloud-verify.support/signin",
+   "reasons": [
+    [
+     "The address puts \"apple\" in front of an unrelated domain, imitating Apple.",
+     30
+    ],
+    [
+     "The link uses words scammers like: signin, support, verify.",
+     12
+    ],
+    [
+     "It uses the .support ending, which scammers use often.",
+     8
+    ],
+    [
+     "The name has several hyphens, like many scam domains.",
+     5
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "https://xn--pple-43d.com/signin",
+   "reasons": [
+    [
+     "The address uses look-alike letters from another alphabet to spell \"apple\", imitating Apple.",
+     45
+    ],
+    [
+     "The name has several hyphens, like many scam domains.",
+     5
+    ],
+    [
+     "The link uses words scammers like: signin.",
+     4
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://xn--80ak6aa92e.com/",
+   "reasons": [
+    [
+     "The address uses look-alike letters from another alphabet to spell \"apple\", imitating Apple.",
+     45
+    ],
+    [
+     "The name has several hyphens, like many scam domains.",
+     5
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://onlinesbi.sbi.kyc-verify.in/",
+   "reasons": [
+    [
+     "The address puts \"onlinesbi\" in front of an unrelated domain, imitating SBI.",
+     30
+    ],
+    [
+     "The link uses words scammers like: kyc, verify.",
+     8
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "https://hdfcbank.com.secure-login.top/",
+   "reasons": [
+    [
+     "The address puts \"hdfcbank\" in front of an unrelated domain, imitating HDFC Bank.",
+     30
+    ],
+    [
+     "It uses the .top ending, which scammers use often.",
+     8
+    ],
+    [
+     "The link uses words scammers like: login, secure.",
+     8
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://bit.ly/3x4mpl3",
+   "reasons": [
+    [
+     "The link was shortened, which hides where it really goes.",
+     5
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "https://www.irctc.co.in/nget/train-search",
+   "reasons": [],
+   "good": [
+    [
+     "This is the real website of IRCTC.",
+     -40
+    ]
+   ]
+  },
+  {
+   "url": "http://irctc-refund.co.in/claim",
+   "reasons": [
+    [
+     "The address adds extra words around \"irctc\", imitating IRCTC.",
+     25
+    ],
+    [
+     "The link uses words scammers like: claim, refund.",
+     8
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://bankofbaroda-kyc.in/update",
+   "reasons": [
+    [
+     "The address adds extra words around \"bankofbaroda\", imitating Bank of Baroda.",
+     25
+    ],
+    [
+     "The link uses words scammers like: kyc, update.",
+     8
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://www.myjio-recharge-offer.xyz/free",
+   "reasons": [
+    [
+     "The address adds extra words around \"myjio\", imitating Jio.",
+     25
+    ],
+    [
+     "It uses the .xyz ending, which scammers use often.",
+     8
+    ],
+    [
+     "The name has several hyphens, like many scam domains.",
+     5
+    ],
+    [
+     "The link uses words scammers like: free.",
+     4
+    ]
+   ],
+   "good": []
+  },
+  {
+   "url": "http://icicibank.com-secure.verify-kyc.online/login",
+   "reasons": [
+    [
+     "The address puts \"icicibank\" in front of an unrelated domain, imitating ICICI Bank.",
+     30
+    ],
+    [
+     "The link uses words scammers like: kyc, login, secure, verify.",
+     12
+    ],
+    [
+     "It uses the .online ending, which scammers use often.",
+     8
+    ]
+   ],
+   "good": []
+  }
+ ]
+}

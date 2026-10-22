@@ -1,0 +1,739 @@
+{
+ "_source": "Trimmed copy of LinkLens api/app/analysis/data/brands.json (name, category, domains, labels). Keep in sync by hand.",
+ "brands": [
+  {
+   "name": "SBI",
+   "category": "bank",
+   "domains": [
+    "onlinesbi.sbi",
+    "sbi.co.in",
+    "sbi.bank.in",
+    "sbicard.com",
+    "sbi"
+   ],
+   "labels": [
+    "onlinesbi",
+    "sbi",
+    "yonosbi"
+   ]
+  },
+  {
+   "name": "HDFC Bank",
+   "category": "bank",
+   "domains": [
+    "hdfcbank.com",
+    "hdfc.bank.in",
+    "hdfc.com"
+   ],
+   "labels": [
+    "hdfcbank",
+    "hdfc"
+   ]
+  },
+  {
+   "name": "ICICI Bank",
+   "category": "bank",
+   "domains": [
+    "icicibank.com",
+    "icici.bank.in"
+   ],
+   "labels": [
+    "icicibank",
+    "icici"
+   ]
+  },
+  {
+   "name": "Axis Bank",
+   "category": "bank",
+   "domains": [
+    "axisbank.com",
+    "axis.bank.in"
+   ],
+   "labels": [
+    "axisbank"
+   ]
+  },
+  {
+   "name": "Kotak Mahindra Bank",
+   "category": "bank",
+   "domains": [
+    "kotak.com",
+    "kotak.bank.in"
+   ],
+   "labels": [
+    "kotak",
+    "kotakbank"
+   ]
+  },
+  {
+   "name": "Punjab National Bank",
+   "category": "bank",
+   "domains": [
+    "pnbindia.in",
+    "pnb.bank.in",
+    "netpnb.com"
+   ],
+   "labels": [
+    "pnbindia",
+    "netpnb"
+   ]
+  },
+  {
+   "name": "Bank of Baroda",
+   "category": "bank",
+   "domains": [
+    "bankofbaroda.in",
+    "bankofbaroda.com"
+   ],
+   "labels": [
+    "bankofbaroda"
+   ]
+  },
+  {
+   "name": "Canara Bank",
+   "category": "bank",
+   "domains": [
+    "canarabank.com"
+   ],
+   "labels": [
+    "canarabank"
+   ]
+  },
+  {
+   "name": "Union Bank of India",
+   "category": "bank",
+   "domains": [
+    "unionbankofindia.co.in"
+   ],
+   "labels": [
+    "unionbankofindia"
+   ]
+  },
+  {
+   "name": "Yes Bank",
+   "category": "bank",
+   "domains": [
+    "yesbank.in"
+   ],
+   "labels": [
+    "yesbank"
+   ]
+  },
+  {
+   "name": "IDFC FIRST Bank",
+   "category": "bank",
+   "domains": [
+    "idfcfirstbank.com"
+   ],
+   "labels": [
+    "idfcfirstbank",
+    "idfcfirst"
+   ]
+  },
+  {
+   "name": "IndusInd Bank",
+   "category": "bank",
+   "domains": [
+    "indusind.com"
+   ],
+   "labels": [
+    "indusind"
+   ]
+  },
+  {
+   "name": "Paytm",
+   "category": "payment",
+   "domains": [
+    "paytm.com",
+    "paytmbank.com",
+    "paytm.in"
+   ],
+   "labels": [
+    "paytm"
+   ]
+  },
+  {
+   "name": "PhonePe",
+   "category": "payment",
+   "domains": [
+    "phonepe.com"
+   ],
+   "labels": [
+    "phonepe"
+   ]
+  },
+  {
+   "name": "BHIM UPI",
+   "category": "payment",
+   "domains": [
+    "npci.org.in",
+    "bhimupi.org.in",
+    "npci.github.io"
+   ],
+   "labels": [
+    "bhimupi",
+    "npci"
+   ]
+  },
+  {
+   "name": "India Post",
+   "category": "government",
+   "domains": [
+    "indiapost.gov.in",
+    "ippbonline.com"
+   ],
+   "labels": [
+    "indiapost",
+    "ippbonline"
+   ]
+  },
+  {
+   "name": "Income Tax Department",
+   "category": "government",
+   "domains": [
+    "incometax.gov.in",
+    "incometaxindia.gov.in"
+   ],
+   "labels": [
+    "incometax",
+    "incometaxindia"
+   ]
+  },
+  {
+   "name": "UIDAI (Aadhaar)",
+   "category": "government",
+   "domains": [
+    "uidai.gov.in"
+   ],
+   "labels": [
+    "uidai",
+    "myaadhaar"
+   ]
+  },
+  {
+   "name": "EPFO",
+   "category": "government",
+   "domains": [
+    "epfindia.gov.in"
+   ],
+   "labels": [
+    "epfindia",
+    "epfo"
+   ]
+  },
+  {
+   "name": "Parivahan (e-Challan)",
+   "category": "government",
+   "domains": [
+    "parivahan.gov.in"
+   ],
+   "labels": [
+    "parivahan",
+    "echallan"
+   ]
+  },
+  {
+   "name": "GST Portal",
+   "category": "government",
+   "domains": [
+    "gst.gov.in"
+   ],
+   "labels": [
+    "gstportal"
+   ]
+  },
+  {
+   "name": "IRCTC",
+   "category": "government",
+   "domains": [
+    "irctc.co.in"
+   ],
+   "labels": [
+    "irctc"
+   ]
+  },
+  {
+   "name": "LIC",
+   "category": "bank",
+   "domains": [
+    "licindia.in"
+   ],
+   "labels": [
+    "licindia"
+   ]
+  },
+  {
+   "name": "Flipkart",
+   "category": "shopping",
+   "domains": [
+    "flipkart.com"
+   ],
+   "labels": [
+    "flipkart"
+   ]
+  },
+  {
+   "name": "Myntra",
+   "category": "shopping",
+   "domains": [
+    "myntra.com"
+   ],
+   "labels": [
+    "myntra"
+   ]
+  },
+  {
+   "name": "Meesho",
+   "category": "shopping",
+   "domains": [
+    "meesho.com"
+   ],
+   "labels": [
+    "meesho"
+   ]
+  },
+  {
+   "name": "Jio",
+   "category": "telecom",
+   "domains": [
+    "jio.com"
+   ],
+   "labels": [
+    "myjio",
+    "jio"
+   ]
+  },
+  {
+   "name": "Airtel",
+   "category": "telecom",
+   "domains": [
+    "airtel.in",
+    "airtel.com"
+   ],
+   "labels": [
+    "airtel"
+   ]
+  },
+  {
+   "name": "Zomato",
+   "category": "shopping",
+   "domains": [
+    "zomato.com",
+    "zomato.github.io"
+   ],
+   "labels": [
+    "zomato"
+   ]
+  },
+  {
+   "name": "Swiggy",
+   "category": "shopping",
+   "domains": [
+    "swiggy.com"
+   ],
+   "labels": [
+    "swiggy"
+   ]
+  },
+  {
+   "name": "PayPal",
+   "category": "payment",
+   "domains": [
+    "paypal.com",
+    "paypal.me"
+   ],
+   "labels": [
+    "paypal"
+   ]
+  },
+  {
+   "name": "Apple",
+   "category": "tech",
+   "domains": [
+    "apple.com",
+    "icloud.com",
+    "apple.github.io"
+   ],
+   "labels": [
+    "apple",
+    "icloud",
+    "appleid"
+   ]
+  },
+  {
+   "name": "Microsoft",
+   "category": "tech",
+   "domains": [
+    "microsoft.com",
+    "live.com",
+    "office.com",
+    "outlook.com",
+    "microsoftonline.com",
+    "office365.com",
+    "sharepoint.com",
+    "windows.com",
+    "bing.com",
+    "microsoft.github.io"
+   ],
+   "labels": [
+    "microsoft",
+    "office365",
+    "outlook",
+    "microsoftonline",
+    "sharepoint"
+   ]
+  },
+  {
+   "name": "Google",
+   "category": "tech",
+   "domains": [
+    "google.com",
+    "gmail.com",
+    "youtube.com",
+    "google.co.in",
+    "google.github.io"
+   ],
+   "labels": [
+    "google",
+    "gmail"
+   ]
+  },
+  {
+   "name": "Amazon",
+   "category": "shopping",
+   "domains": [
+    "amazon.com",
+    "amazon.in",
+    "amazon.co.uk",
+    "amazon.de",
+    "amazon.ca",
+    "amazon.com.au",
+    "amazon.co.jp",
+    "amazon.fr",
+    "amazon.it",
+    "amazon.es"
+   ],
+   "labels": [
+    "amazon"
+   ]
+  },
+  {
+   "name": "Netflix",
+   "category": "streaming",
+   "domains": [
+    "netflix.com"
+   ],
+   "labels": [
+    "netflix"
+   ]
+  },
+  {
+   "name": "Facebook",
+   "category": "social",
+   "domains": [
+    "facebook.com",
+    "fb.com",
+    "meta.com",
+    "messenger.com",
+    "facebook.github.io"
+   ],
+   "labels": [
+    "facebook",
+    "fbook"
+   ]
+  },
+  {
+   "name": "Instagram",
+   "category": "social",
+   "domains": [
+    "instagram.com"
+   ],
+   "labels": [
+    "instagram"
+   ]
+  },
+  {
+   "name": "WhatsApp",
+   "category": "social",
+   "domains": [
+    "whatsapp.com",
+    "whatsapp.net",
+    "wa.me"
+   ],
+   "labels": [
+    "whatsapp"
+   ]
+  },
+  {
+   "name": "LinkedIn",
+   "category": "social",
+   "domains": [
+    "linkedin.com",
+    "linkedin.github.io"
+   ],
+   "labels": [
+    "linkedin"
+   ]
+  },
+  {
+   "name": "Telegram",
+   "category": "social",
+   "domains": [
+    "telegram.org",
+    "t.me"
+   ],
+   "labels": [
+    "telegram"
+   ]
+  },
+  {
+   "name": "X (Twitter)",
+   "category": "social",
+   "domains": [
+    "x.com",
+    "twitter.com"
+   ],
+   "labels": [
+    "twitter"
+   ]
+  },
+  {
+   "name": "DHL",
+   "category": "delivery",
+   "domains": [
+    "dhl.com",
+    "dhl.de"
+   ],
+   "labels": [
+    "dhl"
+   ]
+  },
+  {
+   "name": "FedEx",
+   "category": "delivery",
+   "domains": [
+    "fedex.com"
+   ],
+   "labels": [
+    "fedex"
+   ]
+  },
+  {
+   "name": "UPS",
+   "category": "delivery",
+   "domains": [
+    "ups.com"
+   ],
+   "labels": [
+    "ups"
+   ]
+  },
+  {
+   "name": "USPS",
+   "category": "delivery",
+   "domains": [
+    "usps.com"
+   ],
+   "labels": [
+    "usps"
+   ]
+  },
+  {
+   "name": "Chase",
+   "category": "bank",
+   "domains": [
+    "chase.com"
+   ],
+   "labels": [
+    "chase",
+    "chaseonline"
+   ]
+  },
+  {
+   "name": "Wells Fargo",
+   "category": "bank",
+   "domains": [
+    "wellsfargo.com"
+   ],
+   "labels": [
+    "wellsfargo"
+   ]
+  },
+  {
+   "name": "Bank of America",
+   "category": "bank",
+   "domains": [
+    "bankofamerica.com"
+   ],
+   "labels": [
+    "bankofamerica"
+   ]
+  },
+  {
+   "name": "HSBC",
+   "category": "bank",
+   "domains": [
+    "hsbc.com",
+    "hsbc.co.in",
+    "hsbc.co.uk",
+    "hsbc.github.io"
+   ],
+   "labels": [
+    "hsbc"
+   ]
+  },
+  {
+   "name": "Citibank",
+   "category": "bank",
+   "domains": [
+    "citi.com",
+    "citibank.com"
+   ],
+   "labels": [
+    "citibank"
+   ]
+  },
+  {
+   "name": "Coinbase",
+   "category": "crypto",
+   "domains": [
+    "coinbase.com"
+   ],
+   "labels": [
+    "coinbase"
+   ]
+  },
+  {
+   "name": "Binance",
+   "category": "crypto",
+   "domains": [
+    "binance.com",
+    "binance.github.io"
+   ],
+   "labels": [
+    "binance"
+   ]
+  },
+  {
+   "name": "MetaMask",
+   "category": "crypto",
+   "domains": [
+    "metamask.io",
+    "metamask.github.io"
+   ],
+   "labels": [
+    "metamask"
+   ]
+  },
+  {
+   "name": "Trust Wallet",
+   "category": "crypto",
+   "domains": [
+    "trustwallet.com",
+    "trustwallet.github.io"
+   ],
+   "labels": [
+    "trustwallet"
+   ]
+  },
+  {
+   "name": "Blockchain.com",
+   "category": "crypto",
+   "domains": [
+    "blockchain.com",
+    "blockchain.github.io"
+   ],
+   "labels": [
+    "blockchain"
+   ]
+  },
+  {
+   "name": "Steam",
+   "category": "gaming",
+   "domains": [
+    "steampowered.com",
+    "steamcommunity.com"
+   ],
+   "labels": [
+    "steampowered",
+    "steamcommunity"
+   ]
+  },
+  {
+   "name": "Roblox",
+   "category": "gaming",
+   "domains": [
+    "roblox.com",
+    "roblox.github.io"
+   ],
+   "labels": [
+    "roblox"
+   ]
+  },
+  {
+   "name": "Adobe",
+   "category": "tech",
+   "domains": [
+    "adobe.com",
+    "adobe.github.io"
+   ],
+   "labels": [
+    "adobe"
+   ]
+  },
+  {
+   "name": "Dropbox",
+   "category": "tech",
+   "domains": [
+    "dropbox.com",
+    "dropbox.github.io"
+   ],
+   "labels": [
+    "dropbox"
+   ]
+  },
+  {
+   "name": "DocuSign",
+   "category": "tech",
+   "domains": [
+    "docusign.com",
+    "docusign.net",
+    "docusign.github.io"
+   ],
+   "labels": [
+    "docusign"
+   ]
+  },
+  {
+   "name": "Yahoo",
+   "category": "tech",
+   "domains": [
+    "yahoo.com"
+   ],
+   "labels": [
+    "yahoo"
+   ]
+  },
+  {
+   "name": "eBay",
+   "category": "shopping",
+   "domains": [
+    "ebay.com",
+    "ebay.in"
+   ],
+   "labels": [
+    "ebay"
+   ]
+  },
+  {
+   "name": "Spotify",
+   "category": "streaming",
+   "domains": [
+    "spotify.com"
+   ],
+   "labels": [
+    "spotify"
+   ]
+  }
+ ]
+}
