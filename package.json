@@ -1,0 +1,33 @@
+{
+  "name": "rohit-bhardwaj-portfolio",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio of Rohit Bhardwaj, cyber security engineer.",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "npm run fonts && astro dev",
+    "fonts": "node scripts/fetch-fonts.mjs",
+    "build": "npm run fonts && astro build",
+    "preview": "astro preview",
+    "check": "astro check && eslint . --max-warnings 0",
+    "test": "node --test \"tests/**/*.test.ts\"",
+    "qa": "node qa/audit.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "astro": "7.3.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@eslint/js": "10.0.1",
+    "eslint": "10.12.0",
+    "eslint-plugin-astro": "3.2.1",
+    "playwright-core": "1.64.0",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.2"
+  }
+}

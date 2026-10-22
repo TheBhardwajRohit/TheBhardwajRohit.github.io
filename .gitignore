@@ -1,0 +1,19 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# Switzer is fetched at build time (scripts/fetch-fonts.mjs); its license does not allow
+# redistributing the files through a public repository.
+public/fonts/
+
+# local tooling
+.taste-skill/
+qa/output/
+npm-debug.log*
+.env
+.env.*
+.DS_Store
+Thumbs.db
