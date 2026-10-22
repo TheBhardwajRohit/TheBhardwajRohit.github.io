@@ -1,0 +1,112 @@
+---
+import { person } from '../data/site.ts';
+---
+
+<header class="site-header frame">
+  <a class="wordmark" href="/" aria-label={`${person.name}, home`}>{person.name}</a>
+  <nav aria-label="Primary">
+    <ul>
+      <li><a href="/#work">Work</a></li>
+      <li class="optional"><a href="/#recognition">Recognition</a></li>
+      <li><a href="/#contact">Contact</a></li>
+      <li><a href="/resume/">Resume</a></li>
+    </ul>
+    <button class="palette-button" type="button" data-palette-open aria-haspopup="dialog" aria-controls="palette">
+      <span class="sr-only">Open the command menu</span>
+      <kbd data-mod-key>Ctrl</kbd><kbd>K</kbd>
+    </button>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding-top: clamp(20px, 3vw, 32px);
+    padding-bottom: 8px;
+  }
+
+  .wordmark {
+    margin-left: var(--indent);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-decoration-color: transparent;
+    white-space: nowrap;
+  }
+
+  .wordmark:hover {
+    text-decoration-color: currentColor;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(16px, 2.2vw, 32px);
+  }
+
+  ul {
+    display: flex;
+    gap: clamp(16px, 2.2vw, 28px);
+  }
+
+  nav a {
+    display: inline-block;
+    padding-block: 10px;
+    text-decoration: none;
+    color: var(--muted);
+    transition: color 160ms var(--ease);
+  }
+
+  nav a:hover {
+    color: var(--ink);
+  }
+
+  .palette-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--rule); /* taste-skill-ignore: 1px rule by brief, keyboard hint control */
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--muted);
+    transition: color 160ms var(--ease), border-color 160ms var(--ease), background-color 160ms var(--ease);
+  }
+
+  .palette-button:hover {
+    color: var(--ink);
+    border-color: var(--muted);
+    background: var(--surface);
+  }
+
+  kbd {
+    font-size: 0.8125rem;
+  }
+
+  @media (max-width: 640px) {
+    .optional {
+      display: none;
+    }
+
+    ul {
+      gap: 16px;
+    }
+  }
+
+  @media (max-width: 640px), (hover: none) {
+    .palette-button {
+      display: none;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .site-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+  }
+</style>

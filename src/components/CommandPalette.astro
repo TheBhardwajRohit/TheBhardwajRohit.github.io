@@ -1,0 +1,290 @@
+---
+import { person } from '../data/site.ts';
+
+// Each command is one plain action. "go" scrolls to a section on the home page.
+const commands = [
+  { id: 'go-work', label: 'Go to Work', hint: 'Section', action: 'go', value: '/#work' },
+  { id: 'go-linklens', label: 'Go to LinkLens', hint: 'Case study', action: 'go', value: '/#linklens' },
+  { id: 'go-echelon', label: 'Go to Echelon', hint: 'Case study', action: 'go', value: '/#echelon' },
+  { id: 'go-ulpf', label: 'Go to ULPF', hint: 'Case study', action: 'go', value: '/#ulpf' },
+  { id: 'go-recognition', label: 'Go to Recognition', hint: 'Section', action: 'go', value: '/#recognition' },
+  { id: 'go-record', label: 'Go to Record', hint: 'Section', action: 'go', value: '/#record' },
+  { id: 'go-contact', label: 'Go to Contact', hint: 'Section', action: 'go', value: '/#contact' },
+  { id: 'check-link', label: 'Check a link', hint: 'Live demo', action: 'focus', value: 'lc-input' },
+  { id: 'resume-view', label: 'View resume', hint: 'Page', action: 'go', value: '/resume/' },
+  { id: 'resume-download', label: 'Download resume', hint: 'PDF', action: 'download', value: person.resume.href },
+  { id: 'copy-email', label: 'Copy email address', hint: person.email, action: 'copy', value: person.email },
+  { id: 'open-github', label: 'Open GitHub', hint: 'TheBhardwajRohit', action: 'open', value: person.github },
+  { id: 'open-linkedin', label: 'Open LinkedIn', hint: 'bhardwaj-rohit', action: 'open', value: person.linkedin },
+  { id: 'theme', label: 'Switch light or dark', hint: 'Theme', action: 'theme', value: '' },
+];
+---
+
+<dialog id="palette" class="palette" aria-labelledby="palette-title">
+  <div class="palette-inner">
+    <h2 id="palette-title" class="sr-only">Command menu</h2>
+    <label class="sr-only" for="palette-input">Type a command</label>
+    <input
+      id="palette-input"
+      class="palette-input"
+      type="text"
+      role="combobox"
+      aria-expanded="true"
+      aria-controls="palette-list"
+      aria-autocomplete="list"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="Type a command or a section"
+    />
+    <ul id="palette-list" class="palette-list" role="listbox" aria-label="Commands">
+      {
+        commands.map((c) => (
+          <li id={`cmd-${c.id}`} role="option" aria-selected="false" data-action={c.action} data-value={c.value} data-label={c.label.toLowerCase()}>
+            <span>{c.label}</span>
+            <span class="hint">{c.hint}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="palette-empty" hidden>No command matches that.</p>
+    <p class="palette-foot small"><kbd>↑</kbd> <kbd>↓</kbd> to move, <kbd>Enter</kbd> to run, <kbd>Esc</kbd> to close</p>
+  </div>
+</dialog>
+<p class="sr-only" aria-live="polite" data-palette-status></p>
+
+<style>
+  .palette {
+    width: min(560px, calc(100vw - 32px));
+    margin: 12vh auto auto;
+    padding: 0;
+    border: 1px solid var(--rule); /* taste-skill-ignore: 1px rule by brief, menu UI */
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--ink);
+    box-shadow: 0 24px 64px rgb(0 0 0 / 0.18); /* taste-skill-ignore: the menu is a real overlay */
+  }
+
+  .palette::backdrop {
+    background: rgb(20 19 18 / 0.32);
+  }
+
+  .palette-input {
+    width: 100%;
+    padding: 18px 20px;
+    border: 0;
+    border-bottom: 1px solid var(--rule); /* taste-skill-ignore: 1px rule by brief, menu UI */
+    background: transparent;
+    outline: none;
+  }
+
+  .palette-input:focus-visible {
+    outline: none;
+    border-bottom-color: var(--focus);
+  }
+
+  .palette-list {
+    max-height: min(52vh, 420px);
+    overflow-y: auto;
+    padding: 6px;
+  }
+
+  [role='option'] {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 10px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+
+  [role='option'][aria-selected='true'] {
+    background: var(--surface);
+  }
+
+  [role='option'][hidden] {
+    display: none;
+  }
+
+  .hint {
+    color: var(--muted);
+    font-size: var(--step-small);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .palette-empty,
+  .palette-foot {
+    padding: 12px 20px;
+    color: var(--muted);
+  }
+
+  .palette-foot {
+    border-top: 1px solid var(--rule); /* taste-skill-ignore: 1px rule by brief, menu UI */
+  }
+
+  kbd {
+    font-size: 0.8125rem;
+  }
+</style>
+
+<script>
+  const dialog = document.getElementById('palette') as HTMLDialogElement | null;
+  const input = document.getElementById('palette-input') as HTMLInputElement | null;
+  const empty = document.querySelector<HTMLElement>('.palette-empty');
+  const status = document.querySelector<HTMLElement>('[data-palette-status]');
+
+  if (dialog && input && empty && status) {
+    const options = [...dialog.querySelectorAll<HTMLLIElement>('[role="option"]')];
+    let opener: HTMLElement | null = null;
+
+    const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+    if (isMac) document.querySelectorAll('[data-mod-key]').forEach((k) => (k.textContent = '⌘'));
+
+    const visible = () => options.filter((o) => !o.hidden);
+
+    const select = (option: HTMLLIElement | undefined) => {
+      options.forEach((o) => o.setAttribute('aria-selected', String(o === option)));
+      if (option) {
+        input.setAttribute('aria-activedescendant', option.id);
+        option.scrollIntoView({ block: 'nearest' });
+      } else {
+        input.removeAttribute('aria-activedescendant');
+      }
+    };
+
+    const filter = () => {
+      const q = input.value.trim().toLowerCase();
+      options.forEach((o) => (o.hidden = q !== '' && !(o.dataset.label ?? '').includes(q)));
+      const shown = visible();
+      empty.hidden = shown.length > 0;
+      select(shown[0]);
+    };
+
+    const open = () => {
+      if (dialog.open) return;
+      opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      input.value = '';
+      filter();
+      dialog.showModal();
+      input.focus();
+    };
+
+    const close = () => {
+      if (dialog.open) dialog.close();
+    };
+
+    // Return focus to whatever opened the menu. When that was the page itself, drop focus so it
+    // does not stay on the hidden input.
+    dialog.addEventListener('close', () => {
+      if (opener && opener !== document.body && opener.isConnected) opener.focus();
+      else if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+    });
+
+    const toggleTheme = () => {
+      const root = document.documentElement;
+      const current = root.dataset.theme ?? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      const next = current === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        // Storage can be blocked; the switch still applies to this visit.
+      }
+      return next;
+    };
+
+    const run = async (option: HTMLLIElement | undefined) => {
+      if (!option) return;
+      const { action, value = '' } = option.dataset;
+      close();
+      if (action === 'copy') {
+        try {
+          await navigator.clipboard.writeText(value);
+          status.textContent = `Copied ${value}`;
+        } catch {
+          status.textContent = `Copy failed. The address is ${value}`;
+        }
+        return;
+      }
+      if (action === 'go') {
+        const url = new URL(value, window.location.href);
+        if (url.pathname === window.location.pathname && url.hash) {
+          const target = document.querySelector<HTMLElement>(url.hash);
+          if (target) {
+            history.pushState(null, '', url.hash);
+            target.scrollIntoView();
+            target.focus({ preventScroll: true });
+            return;
+          }
+        }
+        window.location.href = url.href;
+      } else if (action === 'focus') {
+        const target = document.getElementById(value);
+        if (target) {
+          target.scrollIntoView({ block: 'center' });
+          target.focus({ preventScroll: true });
+        } else {
+          window.location.href = '/#lc-input';
+        }
+      } else if (action === 'download') {
+        const a = document.createElement('a');
+        a.href = value;
+        a.download = value.split('/').pop() ?? 'resume.pdf';
+        a.click();
+      } else if (action === 'open') {
+        window.open(value, '_blank', 'noopener');
+      } else if (action === 'theme') {
+        status.textContent = `${toggleTheme()} theme`;
+      }
+    };
+
+    document.addEventListener('keydown', (e) => {
+      const target = e.target as HTMLElement | null;
+      // A field inside the closed menu can keep focus for a moment after Esc; it is not typing.
+      const typing =
+        !!target &&
+        !target.closest('dialog:not([open])') &&
+        (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+      if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        if (dialog.open) close();
+        else open();
+      } else if (e.key === '/' && !typing && !dialog.open) {
+        e.preventDefault();
+        open();
+      }
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-palette-open]').forEach((b) => b.addEventListener('click', open));
+
+    input.addEventListener('input', filter);
+    input.addEventListener('keydown', (e) => {
+      const shown = visible();
+      const current = shown.findIndex((o) => o.getAttribute('aria-selected') === 'true');
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        const step = e.key === 'ArrowDown' ? 1 : -1;
+        select(shown[(current + step + shown.length) % shown.length]);
+      } else if (e.key === 'Home' || e.key === 'End') {
+        e.preventDefault();
+        select(e.key === 'Home' ? shown[0] : shown[shown.length - 1]);
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        void run(shown[current]);
+      }
+    });
+
+    options.forEach((o) => {
+      o.addEventListener('click', () => void run(o));
+      o.addEventListener('mousemove', () => {
+        if (o.getAttribute('aria-selected') !== 'true') select(o);
+      });
+    });
+
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) close();
+    });
+  }
+</script>

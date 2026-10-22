@@ -1,0 +1,58 @@
+---
+import { person } from '../data/site.ts';
+---
+
+<footer class="site-footer frame">
+  <p class="who">{person.name}, {person.city}, 2026</p>
+  <ul class="links">
+    <li><a href={person.github} data-external rel="noopener">GitHub</a></li>
+    <li><a href={person.linkedin} data-external rel="noopener">LinkedIn</a></li>
+    <li><a href="/resume/">Resume</a></li>
+    <li><a href={person.siteSource} data-external rel="noopener">Source of this site</a></li>
+  </ul>
+  <p class="credit">ULPF console screenshot by the ULPF contributors, Apache-2.0.</p>
+</footer>
+
+<style>
+  .site-footer {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    align-items: baseline;
+    gap: 16px 56px;
+    padding-left: calc(var(--margin) + var(--indent));
+    margin-top: clamp(160px, 30svh, 280px);
+    padding-bottom: 32px;
+    font-size: var(--step-small);
+    color: var(--muted);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+  }
+
+  .links a {
+    color: var(--ink);
+  }
+
+  .credit {
+    justify-self: end;
+    text-align: right;
+    max-width: 32ch;
+  }
+
+  @media (max-width: 960px) {
+    .site-footer {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+      margin-top: 20svh;
+    }
+
+    .credit {
+      justify-self: start;
+      text-align: left;
+      max-width: none;
+    }
+  }
+</style>

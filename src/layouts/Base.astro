@@ -1,0 +1,111 @@
+---
+import '@fontsource/jetbrains-mono/400.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CommandPalette from '../components/CommandPalette.astro';
+import { person } from '../data/site.ts';
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+}
+
+const { title, description, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og.png', Astro.site);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: person.name,
+  jobTitle: person.role,
+  url: Astro.site?.href,
+  email: `mailto:${person.email}`,
+  address: { '@type': 'PostalAddress', addressLocality: 'Gandhinagar', addressCountry: 'IN' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: person.university, url: person.universityUrl },
+  sameAs: [person.github, person.linkedin],
+  knowsAbout: ['Phishing detection', 'Fraud detection', 'LLM security', 'Prompt injection', 'Application security', 'Security measurement'],
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={person.name} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#eeecea" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1c1b1a" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={person.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Rohit Bhardwaj. I build tools that catch scams." />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="profile:first_name" content="Rohit" />
+    <meta property="profile:last_name" content="Bhardwaj" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" href="/fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/switzer-500.woff2" as="font" type="font/woff2" crossorigin />
+
+    <script is:inline>
+      // Apply a saved theme before first paint. Storage can be unavailable; the OS setting then decides.
+      try {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+      } catch {
+        // Storage blocked: follow the OS setting.
+      }
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <CommandPalette />
+
+    <script>
+      // Section entrances. Content stays visible if this never runs.
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if (!reduce && 'IntersectionObserver' in window && items.length) {
+        document.documentElement.classList.add('js-reveal');
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              entry.target.classList.add('is-in');
+              io.unobserve(entry.target);
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px' },
+        );
+        items.forEach((el) => io.observe(el));
+        window.addEventListener('beforeprint', () => items.forEach((el) => el.classList.add('is-in')));
+      }
+    </script>
+  </body>
+</html>
