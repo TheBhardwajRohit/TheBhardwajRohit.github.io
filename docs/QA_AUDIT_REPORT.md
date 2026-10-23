@@ -1,7 +1,7 @@
 # QA audit report
 
 Site: https://thebhardwajrohit.github.io/ (source: this repository)
-Date: 2026-10-22
+Dates: 2026-10-22 (first pass), 2026-10-23 (second pass)
 Tools: `qa/audit.mjs` (Playwright driving Chrome 155), `astro check`, ESLint, `node:test`, and the
 design-taste-frontend skill's `lint.mjs` and `inspect.mjs`.
 
@@ -12,7 +12,42 @@ npm run build && npm run preview
 npm run qa -- http://localhost:4321
 ```
 
-## Result
+## Second pass, 2026-10-23
+
+The first pass (below) was mechanical: it proved the site loads, fits and responds, but not that
+its claims are true or readable. An independent review and fresh measurements then found defects it
+could not see. This pass fixed them, cut what repeated, and added checks so the audit catches that
+kind of problem next time.
+
+Fixed: the hero metric now names the LinkLens model and gives its recall; "Live site" says the
+scanner is offline; the blacklist, test-count and ULPF team figures match their sources; the
+light-theme warning colour passes AA (#7a5d1a, was 3.87:1); the first screen has no fade-in, which
+had delayed its first paint on phones; the link check refuses text that is not a link.
+
+Cut: the VitalGrid case study (now a Record entry), two weak Work rows, the Reasons tab and the
+scan-story recording, the Recognition section (merged into Record, Hacksplosion dropped), the
+header's Ctrl K badge (the shortcut stays), repeated stories, and the footer's repeat of the contact
+links on the home page. The home page went from 10,439 px to 9,173 px tall at 1440 px wide, and
+from 12,526 px to 10,866 px at 375 px.
+
+New checks in `qa/audit.mjs`: text contrast against its real background for every visible text
+element, on every route, at 375 and 1440 px, in both themes; the first screen has no entrance
+animation; the link check refuses "not a link at all", "hello" and "localhost:3000". The slideshow
+checks went with the slideshow.
+
+| Gate | Result |
+|---|---|
+| `astro check` | 0 errors, 0 warnings, 0 hints |
+| ESLint, `--max-warnings 0` | 0 problems |
+| Unit tests | 45 passed, 0 failed (38 still match LinkLens's own output) |
+| Design linter / inspector | 0 FAIL; one WARN, "no video", expected after removing the recording |
+| QA audit, local build | 825 checks, 0 failed |
+| QA audit, live site (https://thebhardwajrohit.github.io) | **825 checks, 0 failed** |
+
+Still needs a person, not a script: reading each claim against the line it cites, opening every
+outside "live" link, and a real phone and screen reader.
+
+## First pass result, 2026-10-22
 
 | Gate | Result |
 |---|---|
@@ -160,3 +195,9 @@ node qa/audit.mjs https://thebhardwajrohit.github.io
 Result: **895 checks, 0 failed.** GitHub Pages serves `/` and `/resume/` with 200, the resume as
 `application/pdf`, and any unknown path with this site's own 404 page and status 404. The existing
 project site at `/LinkLens/` still answers 200 next to it.
+
+## Live run, second pass
+
+After deploy run 39970296015 (build, tests, type check, lint and deploy all green), the updated
+audit ran against the production URL on 2026-10-23: **825 checks, 0 failed**, including the new
+contrast, first-paint and junk-input checks.
