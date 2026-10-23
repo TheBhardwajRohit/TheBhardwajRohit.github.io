@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { checkLink, damerauLevenshtein, type LinkCheck } from '../src/lib/linkcheck.ts';
+import { BLOCKED_REASON as BLOCKED, checkLink, damerauLevenshtein, type LinkCheck } from '../src/lib/linkcheck.ts';
 import { toUnicode } from '../src/lib/punycode.ts';
 
 interface OracleCase {
@@ -12,7 +12,6 @@ interface OracleCase {
 
 // What LinkLens's own Python code says about each link (see _source in the file).
 const oracle: { cases: OracleCase[] } = JSON.parse(readFileSync(new URL('./fixtures/linklens-oracle.json', import.meta.url), 'utf8'));
-const BLOCKED = 'The link tried to reach a private or internal address. Real websites never do that.';
 
 function ok(input: string): LinkCheck {
   const result = checkLink(input);
@@ -59,12 +58,20 @@ test('links are defanged for display', () => {
 
 test('a scheme is added when missing, and only web links are accepted', () => {
   assert.equal(ok('example.com/login').url, 'http://example.com/login');
-  assert.equal(ok('localhost:3000').host, 'localhost');
+  assert.equal(ok('example.com:3000').host, 'example.com');
   assert.equal(checkLink('javascript:alert(1)').ok, false);
   assert.equal(checkLink('mailto:someone@example.com').ok, false);
   assert.equal(checkLink('   ').ok, false);
   assert.equal(checkLink('x'.repeat(3000)).ok, false);
   assert.equal(checkLink('http://').ok, false);
+});
+
+test('text that is not a single web address is refused, outside the LinkLens rules', () => {
+  assert.equal(checkLink('not a link at all').ok, false);
+  assert.equal(checkLink('hello').ok, false);
+  assert.equal(checkLink('localhost:3000').ok, false);
+  assert.equal(checkLink('https://example.com/a b').ok, false);
+  assert.equal(ok('http://[::1]/').verdict, 'suspicious');
 });
 
 test('helpers', () => {

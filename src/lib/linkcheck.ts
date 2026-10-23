@@ -45,6 +45,8 @@ export const VERDICT_WORDS: Record<Verdict, string> = {
   dangerous: 'Likely dangerous',
 };
 
+export const BLOCKED_REASON = 'The link points to a private or internal address, which real websites never use.';
+
 export const SAFE_MAX = 30;
 export const SUSPICIOUS_MAX = 69;
 export const MAX_INPUT = 2048;
@@ -302,6 +304,8 @@ export function checkLink(input: string): LinkCheck | LinkCheckError {
   const raw = input.trim();
   if (!raw) return { ok: false, error: 'Paste or type a link first.' };
   if (raw.length > MAX_INPUT) return { ok: false, error: `That is longer than ${MAX_INPUT.toLocaleString('en-IN')} characters.` };
+  // Not part of LinkLens's link rules: the demo refuses text that cannot be a single web address.
+  if (/\s/.test(raw)) return { ok: false, error: 'That has spaces in it, so it is not a single link. Paste just the link.' };
 
   const hasScheme = /^[a-z][a-z0-9+.-]*:/i.test(raw) && !/^[^/:]+:\d+(\/|$)/.test(raw);
   if (hasScheme && !/^https?:\/\//i.test(raw)) {
@@ -317,6 +321,9 @@ export function checkLink(input: string): LinkCheck | LinkCheckError {
   }
   const host = url.hostname.toLowerCase().replace(/\.$/, '');
   if (!host) return { ok: false, error: 'That link has no site name in it.' };
+  if (!host.includes('.') && !host.startsWith('[')) {
+    return { ok: false, error: 'That is not a web address: a site name needs a dot, as in example.com.' };
+  }
 
   const authority = normalized.replace(/^[a-z][a-z0-9+.-]*:\/\//i, '').split(/[/?#]/)[0];
   const hasAt = authority.includes('@');
@@ -360,9 +367,10 @@ export function checkLink(input: string): LinkCheck | LinkCheckError {
   // score.reputation_reasons(), without the Tranco half.
   const goodSigns: Reason[] = official ? [{ text: `This is the real website of ${official}.`, points: -40 }] : [];
 
-  // The sandbox guard refuses private addresses before any visit (score.behavior_reasons()).
+  // The sandbox guard refuses private addresses before any visit (score.behavior_reasons()). The demo
+  // visits nothing, so it says where the link points rather than what it tried to reach.
   const blocked = isIp && isBlockedAddress(host);
-  if (blocked) add('The link tried to reach a private or internal address. Real websites never do that.', 25);
+  if (blocked) add(BLOCKED_REASON, 25);
 
   // Heaviest reason first, as in the LinkLens report.
   reasons.sort((a, b) => b.points - a.points);
