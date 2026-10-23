@@ -32,6 +32,7 @@ export default [
         localStorage: 'readonly',
         getComputedStyle: 'readonly',
         HTMLElement: 'readonly',
+        NodeFilter: 'readonly',
       },
     },
   },

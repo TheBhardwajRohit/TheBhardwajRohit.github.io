@@ -186,7 +186,12 @@ for (const r of ROUTES) {
     await page.evaluate(() => document.activeElement instanceof HTMLElement && document.activeElement.blur());
     await page.waitForTimeout(260);
     const rest = await page.screenshot({ clip });
-    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    // Aim at the first line box: a link that wraps has empty space in the middle of its bounding box.
+    const first = await loc.evaluate((el) => {
+      const r = el.getClientRects()[0];
+      return { x: r.left + Math.min(r.width / 2, 20), y: r.top + r.height / 2 };
+    });
+    await page.mouse.move(first.x, first.y);
     await page.waitForTimeout(260);
     const hover = await page.screenshot({ clip });
     record('states', `${label}: hover is visible`, !rest.equals(hover));
@@ -304,7 +309,7 @@ for (const r of ROUTES.filter((x) => x.status === 200)) {
   }
 }
 
-// 5. Behaviour: the live link check, the command menu, copy buttons, the slideshow, the theme.
+// 5. Behaviour: the live link check, the command menu, copy buttons, the theme.
 {
   const { context, page, errors } = await newPage({ width: 1440, reduced: false });
   await page.goto(BASE + '/', { waitUntil: 'networkidle' });
@@ -324,6 +329,12 @@ for (const r of ROUTES.filter((x) => x.status === 200)) {
   await page.getByRole('button', { name: 'Check', exact: true }).click();
   record('link check', 'non-web scheme is refused with a message', (await page.locator('#check [data-error]').innerText()).includes('Only web links'));
   record('link check', 'defanged output is never a link', (await page.locator('#check [data-defanged] a').count()) === 0);
+  for (const junk of ['not a link at all', 'hello', 'localhost:3000']) {
+    await page.locator('#lc-input').fill(junk);
+    await page.locator('#lc-input').press('Enter');
+    const refused = (await page.locator('#check .lc-result').getAttribute('data-verdict')) === 'error';
+    record('link check', `"${junk}" is refused, not scored`, refused);
+  }
 
   await page.keyboard.press('Escape');
   await page.locator('body').click({ position: { x: 5, y: 5 } });
@@ -359,16 +370,6 @@ for (const r of ROUTES.filter((x) => x.status === 200)) {
   record('contact', 'Copy button copies the email', (await page.evaluate(() => navigator.clipboard.readText())) === 'rbhardwaj.office@gmail.com');
   record('contact', 'Copy button confirms', (await page.locator('#contact .copied').innerText()) === 'Copied');
 
-  await page.locator('#linklens').scrollIntoViewIfNeeded();
-  await page.getByRole('button', { name: 'Report', exact: true }).click();
-  const active = await page.locator('[data-shots] .shot.is-active').getAttribute('data-shot-image');
-  record('slideshow', 'choosing Report shows the report', active === '1', `active ${active}`);
-  record('slideshow', 'choosing a screen pauses the cycle', (await page.locator('[data-shots-toggle]').innerText()) === 'Play');
-  await page.getByRole('button', { name: 'Scan story', exact: true }).click();
-  await page.waitForTimeout(1200);
-  const playingVideo = await page.locator('[data-shots] video').evaluate((v) => !v.paused && v.readyState >= 2);
-  record('slideshow', 'the scan story recording plays', playingVideo);
-
   await page.goto(BASE + '/', { waitUntil: 'networkidle' });
   await page.keyboard.press('Tab');
   await page.keyboard.press('Enter');
@@ -382,19 +383,86 @@ for (const r of ROUTES.filter((x) => x.status === 200)) {
   await context.close();
 }
 
-// 6. Reduced motion: no autoplay, nothing hidden.
+// 6. Motion: the first screen paints at once (no entrance animation above the fold), and with
+//    reduced motion nothing is left hidden.
+{
+  const { context, page } = await newPage({ width: 1440, reduced: false });
+  await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
+  const hero = await page.evaluate(() =>
+    [...document.querySelectorAll('.hero h1, .hero .hero-sub, .hero .hero-actions, .hero .facts, .hero .hero-demo')].map((el) => ({
+      el: el.className || el.tagName,
+      opacity: getComputedStyle(el).opacity,
+      reveal: el.hasAttribute('data-reveal'),
+    })),
+  );
+  record('motion', 'first screen has no entrance animation', hero.length === 5 && hero.every((h) => h.opacity === '1' && !h.reveal), JSON.stringify(hero));
+  await context.close();
+}
 {
   const { context, page } = await newPage({ width: 1440, reduced: true });
   await page.goto(BASE + '/', { waitUntil: 'networkidle' });
-  await page.locator('#linklens').scrollIntoViewIfNeeded();
-  await page.waitForTimeout(800);
-  record('motion', 'reduced motion: the recording does not autoplay', await page.locator('[data-shots] video').evaluate((v) => v.paused));
   const hidden = await page.evaluate(() => [...document.querySelectorAll('[data-reveal]')].filter((el) => getComputedStyle(el).opacity === '0').length);
   record('motion', 'reduced motion: every section is visible', hidden === 0, `${hidden} hidden`);
   await context.close();
 }
 
-// 7. Head: SEO and social tags, structured data, landmarks.
+// 7. Contrast: every visible piece of text, in both themes, against the surface behind it.
+//    WCAG 2.2 AA asks 4.5:1, or 3:1 for large text (24px, or 18.67px bold).
+for (const r of ROUTES) {
+  for (const theme of THEMES) {
+    for (const width of [375, 1440]) {
+      const { context, page } = await newPage({ width, theme });
+      await page.goto(BASE + r.path, { waitUntil: 'networkidle' });
+      await scrollThrough(page);
+      const low = await page.evaluate(() => {
+        const parse = (c) => {
+          const m = c.match(/rgba?\(([^)]+)\)/);
+          if (!m) return null;
+          const [rr, gg, bb, aa = '1'] = m[1].split(/[\s,/]+/).filter(Boolean);
+          return [Number(rr), Number(gg), Number(bb), Number(aa)];
+        };
+        const lum = ([r, g, b]) => {
+          const f = (v) => {
+            const c = v / 255;
+            return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+          };
+          return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+        };
+        const backgroundOf = (el) => {
+          for (let p = el; p; p = p.parentElement) {
+            const bg = parse(getComputedStyle(p).backgroundColor);
+            if (bg && bg[3] > 0.5) return bg;
+          }
+          return parse(getComputedStyle(document.body).backgroundColor);
+        };
+        const out = [];
+        const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        const seen = new Set();
+        for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+          const el = n.parentElement;
+          if (!el || seen.has(el) || !n.textContent.trim()) continue;
+          seen.add(el);
+          const rect = el.getBoundingClientRect();
+          const s = getComputedStyle(el);
+          if (rect.width <= 1 || rect.height <= 1 || s.visibility === 'hidden' || el.closest('[hidden], dialog:not([open]), .sr-only, noscript, script, style')) continue;
+          const fg = parse(s.color);
+          const bg = backgroundOf(el);
+          if (!fg || !bg) continue;
+          const [l1, l2] = [lum(fg), lum(bg)].sort((a, b) => b - a);
+          const ratio = (l1 + 0.05) / (l2 + 0.05);
+          const size = parseFloat(s.fontSize);
+          const large = size >= 24 || (size >= 18.66 && Number(s.fontWeight) >= 700);
+          if (ratio < (large ? 3 : 4.5)) out.push(`"${n.textContent.trim().slice(0, 30)}" ${ratio.toFixed(2)}:1`);
+        }
+        return out;
+      });
+      record('contrast', `${r.path} @${width} ${theme}: text meets AA`, low.length === 0, low.slice(0, 4).join(' | '));
+      await context.close();
+    }
+  }
+}
+
+// 8. Head: SEO and social tags, structured data, landmarks.
 for (const r of ROUTES) {
   const { context, page } = await newPage({ width: 1440 });
   await page.goto(BASE + r.path, { waitUntil: 'networkidle' });
@@ -430,7 +498,7 @@ for (const r of ROUTES) {
   record('a11y', `${tag}: every image has alt`, head.imgNoAlt === 0, `${head.imgNoAlt} without`);
   await context.close();
 }
-for (const f of ['/og.png', '/favicon.svg', '/favicon-32.png', '/apple-touch-icon.png', '/robots.txt', '/sitemap-index.xml', '/sitemap-0.xml', '/Rohit_Bhardwaj_Resume.pdf', '/media/linklens-scan-story.mp4']) {
+for (const f of ['/og.png', '/favicon.svg', '/favicon-32.png', '/apple-touch-icon.png', '/robots.txt', '/sitemap-index.xml', '/sitemap-0.xml', '/Rohit_Bhardwaj_Resume.pdf']) {
   const res = await check(BASE + f, { method: 'HEAD' });
   record('assets', `${f} is served`, res.status === 200, `status ${res.status} ${res.type}`);
 }
