@@ -1,16 +1,35 @@
 ---
 import { person } from '../data/site.ts';
+
+interface Props {
+  // The home page has its own Contact section and the only third-party picture.
+  home?: boolean;
+}
+
+const { home = false } = Astro.props;
 ---
 
 <footer class="site-footer frame">
   <p class="who">{person.name}, {person.city}, 2026</p>
   <ul class="links">
-    <li><a href={person.github} data-external rel="noopener">GitHub</a></li>
-    <li><a href={person.linkedin} data-external rel="noopener">LinkedIn</a></li>
-    <li><a href="/resume/">Resume</a></li>
+    {
+      !home && (
+        <>
+          <li>
+            <a href={person.github} data-external rel="noopener">GitHub</a>
+          </li>
+          <li>
+            <a href={person.linkedin} data-external rel="noopener">LinkedIn</a>
+          </li>
+          <li>
+            <a href={`mailto:${person.email}`}>Email</a>
+          </li>
+        </>
+      )
+    }
     <li><a href={person.siteSource} data-external rel="noopener">Source of this site</a></li>
   </ul>
-  <p class="credit">ULPF console screenshot by the ULPF contributors, Apache-2.0.</p>
+  {home && <p class="credit">ULPF console screenshot by the ULPF contributors, Apache-2.0.</p>}
 </footer>
 
 <style>

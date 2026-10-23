@@ -3,7 +3,7 @@
 Portfolio of Rohit Bhardwaj, cyber security student at Rashtriya Raksha University.
 Live at **https://thebhardwajrohit.github.io/**.
 
-The page shows four projects as short case studies (problem, approach, result) and links every
+The page shows three projects as short case studies (problem, approach, result) and links every
 number to the file that measured it. The first screen has a working link check: LinkLens's
 link-text rules, ported to TypeScript and run in the browser. Nothing is fetched and the link never
 leaves the page.
@@ -64,4 +64,4 @@ npm run qa -- http://localhost:4321   # full QA audit, needs Chrome installed
 - JetBrains Mono, SIL Open Font License, via `@fontsource/jetbrains-mono`.
 - Brand list in `src/data/brands.json`: trimmed from LinkLens. TLD list: IANA root zone.
 - ULPF console screenshot: the ULPF contributors, Apache-2.0.
-- LinkLens and Echelon screenshots and the LinkLens recording: Rohit's own projects.
+- LinkLens and Echelon screenshots: Rohit's own projects.

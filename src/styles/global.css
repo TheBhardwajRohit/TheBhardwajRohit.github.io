@@ -29,7 +29,7 @@
   --accent-ink: #ffffff;
   --focus: #2f5b8a;
   --safe: #3f6b4a;
-  --warn: #8a6a1f;
+  --warn: #7a5d1a;
   --danger: #9b3b30;
 
   --font-text: 'Switzer', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -47,6 +47,7 @@
   --column: 560px;
   --wide: 820px;
   --indent: 0px;
+  --col-gap: clamp(48px, 5vw, 88px);
   --section-gap: clamp(96px, 11vw, 168px);
   --radius: 4px;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -54,7 +55,7 @@
 
 @media (min-width: 900px) {
   :root {
-    --indent: clamp(0px, 24vw - 60px, 290px);
+    --indent: clamp(0px, 12vw - 30px, 145px);
   }
 }
 

@@ -7,7 +7,6 @@ const commands = [
   { id: 'go-linklens', label: 'Go to LinkLens', hint: 'Case study', action: 'go', value: '/#linklens' },
   { id: 'go-echelon', label: 'Go to Echelon', hint: 'Case study', action: 'go', value: '/#echelon' },
   { id: 'go-ulpf', label: 'Go to ULPF', hint: 'Case study', action: 'go', value: '/#ulpf' },
-  { id: 'go-recognition', label: 'Go to Recognition', hint: 'Section', action: 'go', value: '/#recognition' },
   { id: 'go-record', label: 'Go to Record', hint: 'Section', action: 'go', value: '/#record' },
   { id: 'go-contact', label: 'Go to Contact', hint: 'Section', action: 'go', value: '/#contact' },
   { id: 'check-link', label: 'Check a link', hint: 'Live demo', action: 'focus', value: 'lc-input' },
@@ -139,9 +138,6 @@ const commands = [
     const options = [...dialog.querySelectorAll<HTMLLIElement>('[role="option"]')];
     let opener: HTMLElement | null = null;
 
-    const isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
-    if (isMac) document.querySelectorAll('[data-mod-key]').forEach((k) => (k.textContent = '⌘'));
-
     const visible = () => options.filter((o) => !o.hidden);
 
     const select = (option: HTMLLIElement | undefined) => {
@@ -256,8 +252,6 @@ const commands = [
         open();
       }
     });
-
-    document.querySelectorAll<HTMLElement>('[data-palette-open]').forEach((b) => b.addEventListener('click', open));
 
     input.addEventListener('input', filter);
     input.addEventListener('keydown', (e) => {

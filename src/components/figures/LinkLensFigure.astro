@@ -1,216 +1,49 @@
 ---
-import { Image, getImage } from 'astro:assets';
-import home from '../../assets/work/linklens-home.jpg';
+import { getImage } from 'astro:assets';
 import report from '../../assets/work/linklens-report.jpg';
-import reasons from '../../assets/work/linklens-reasons.jpg';
+import reportPhone from '../../assets/work/linklens-report-phone.jpg';
 
-const poster = await getImage({ src: home, width: 1100, format: 'webp' });
-
-// The scan story is a recording of LinkLens's own homepage animation: one 16-second cycle.
-const stills = [
-  {
-    src: report,
-    tab: 'Report',
-    alt: 'LinkLens scan report for Google’s test address: likely dangerous, score 100 of 100, malware download, with the main reasons and their points.',
-  },
-  {
-    src: reasons,
-    tab: 'Reasons',
-    alt: 'The “Why we flagged it” list: plus 70 for a Google Safe Browsing listing, plus 30 for imitating Google, plus 8 for many subdomain layers, plus 5 for a domain gone from DNS, then the blacklist results.',
-  },
-];
+// Wide screens get the whole report; phones get the verdict card alone, which stays readable.
+const wide = await getImage({ src: report, widths: [700, 1100, 1600, 2200], format: 'webp' });
+const phone = await getImage({ src: reportPhone, widths: [400, 700, 944], format: 'webp' });
 ---
 
-<figure class="shots" data-shots>
-  <div class="stage">
-    <video
-      class="shot is-active"
-      data-shot-image="0"
-      data-hold="16000"
-      width="1100"
-      height="688"
-      muted
-      loop
-      playsinline
-      preload="none"
-      poster={poster.src}
-      aria-label="LinkLens homepage animation. A graph tells an example scan: the link goes through a shortener and a tracking page, ends at a fake bank login, and one hop is blocked for reaching a private address."
-    >
-      <source src="/media/linklens-scan-story.mp4" type="video/mp4" />
-    </video>
-    {
-      stills.map((s, i) => (
-        <Image
-          src={s.src}
-          alt={s.alt}
-          class="shot"
-          widths={[700, 1100, 1400, 2200]}
-          sizes="(min-width: 1100px) min(1100px, 76vw), calc(100vw - 40px)"
-          loading="lazy"
-          data-shot-image={i + 1}
-          data-hold="6500"
-        />
-      ))
-    }
-  </div>
+<figure>
+  <picture>
+    <source
+      media="(max-width: 640px)"
+      srcset={phone.srcSet.attribute}
+      sizes="calc(100vw - 40px)"
+      width={reportPhone.width}
+      height={reportPhone.height}
+    />
+    <img
+      src={wide.src}
+      srcset={wide.srcSet.attribute}
+      sizes="(min-width: 1100px) min(1100px, 80vw), calc(100vw - 40px)"
+      width={report.width}
+      height={report.height}
+      alt="LinkLens scan report: likely dangerous, risk score 100 of 100, malware download, with each reason and its points."
+      loading="lazy"
+      decoding="async"
+    />
+  </picture>
   <figcaption>
-    <div class="controls" role="group" aria-label="LinkLens screens">
-      <button type="button" data-shot="0" aria-pressed="true">Scan story</button>
-      {
-        stills.map((s, i) => (
-          <button type="button" data-shot={i + 1} aria-pressed="false">
-            {s.tab}
-          </button>
-        ))
-      }
-      <button type="button" class="toggle" data-shots-toggle hidden>Pause</button>
-    </div>
-    <p>Real LinkLens screens: its homepage animation, recorded from the live site, and a saved scan of Google’s harmless test address.</p>
+    A saved LinkLens report. The link is Google’s Safe Browsing test page, which exists to be flagged.
   </figcaption>
 </figure>
 
 <style>
-  .stage {
-    position: relative;
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
+  img {
+    width: 100%;
+    height: auto;
     border-radius: 4px;
     background: #0b1020;
   }
 
-  .stage :global(.shot) {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top left;
-    opacity: 0;
-    transition: opacity 1.6s var(--ease);
-  }
-
-  .stage :global(.shot.is-active) {
-    opacity: 1;
-  }
-
   figcaption {
-    display: grid;
-    gap: 10px;
-    margin-top: 14px;
+    margin-top: 12px;
     font-size: var(--step-small);
     color: var(--muted);
   }
-
-  .controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 18px;
-  }
-
-  .controls button {
-    min-height: 36px;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: var(--muted);
-    text-decoration: underline;
-    text-decoration-color: transparent;
-    text-underline-offset: 0.3em;
-    transition: color 160ms var(--ease), text-decoration-color 160ms var(--ease);
-  }
-
-  .controls button:hover {
-    color: var(--ink);
-  }
-
-  .controls button[aria-pressed='true'] {
-    color: var(--ink);
-    text-decoration-color: currentColor;
-  }
-
-  .controls button[aria-pressed='true']:hover {
-    text-decoration-thickness: 2px;
-  }
-
-  .controls .toggle {
-    margin-left: auto;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .stage :global(.shot) {
-      transition: none;
-    }
-  }
 </style>
-
-<script>
-  // Plays the recorded scan story, then crossfades to the report screens, while the figure is on
-  // screen. Choosing a screen or pressing Pause stops the cycle. Reduced motion shows stills only.
-  document.querySelectorAll<HTMLElement>('[data-shots]').forEach((fig) => {
-    const slides = [...fig.querySelectorAll<HTMLElement>('[data-shot-image]')];
-    const tabs = [...fig.querySelectorAll<HTMLButtonElement>('[data-shot]')];
-    const toggle = fig.querySelector<HTMLButtonElement>('[data-shots-toggle]');
-    const video = fig.querySelector('video');
-    if (!slides.length || !toggle) return;
-
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let current = 0;
-    let timer: number | undefined;
-    let playing = !reduce;
-    let onScreen = false;
-
-    const syncVideo = () => {
-      if (!video) return;
-      if (playing && onScreen && !document.hidden && current === 0) {
-        video.play().catch(() => {
-          // Autoplay refused: the poster stays, which is the same scene as a still.
-        });
-      } else {
-        video.pause();
-      }
-    };
-
-    const show = (i: number) => {
-      current = (i + slides.length) % slides.length;
-      slides.forEach((s, n) => s.classList.toggle('is-active', n === current));
-      tabs.forEach((t, n) => t.setAttribute('aria-pressed', String(n === current)));
-      if (video && current === 0) video.currentTime = 0;
-    };
-
-    const schedule = () => {
-      window.clearTimeout(timer);
-      timer = undefined;
-      if (playing && onScreen && !document.hidden) {
-        const hold = Number(slides[current].dataset.hold ?? 6500);
-        timer = window.setTimeout(() => {
-          show(current + 1);
-          schedule();
-        }, hold);
-      }
-      syncVideo();
-      toggle.textContent = playing ? 'Pause' : 'Play';
-      toggle.setAttribute('aria-label', playing ? 'Pause the slideshow' : 'Play the slideshow');
-    };
-
-    tabs.forEach((t) =>
-      t.addEventListener('click', () => {
-        playing = false;
-        show(Number(t.dataset.shot));
-        schedule();
-        if (video && current === 0 && !reduce) video.play().catch(() => undefined);
-      }),
-    );
-
-    toggle.hidden = reduce;
-    toggle.addEventListener('click', () => {
-      playing = !playing;
-      schedule();
-    });
-
-    new IntersectionObserver((entries) => {
-      onScreen = entries.some((e) => e.isIntersecting);
-      schedule();
-    }).observe(fig);
-    document.addEventListener('visibilitychange', schedule);
-  });
-</script>

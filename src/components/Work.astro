@@ -20,39 +20,26 @@ const figures = { linklens: LinkLensFigure, echelon: EchelonFigure, ulpf: UlpfFi
     <h2 id="work-title" class="section-title" data-reveal>Work</h2>
     <ol class="ledger" data-reveal style="--i: 1">
       {
-        ledger.map((row) => {
-          const inner = (
-            <>
+        ledger.map((row) => (
+          <li>
+            <a href={row.href}>
               <span class="l-name">{row.name}</span>
               <span class="l-kind">{row.kind}</span>
               <span class="l-year data">{row.year}</span>
-            </>
-          );
-          return (
-            <li>
-              {row.href ? (
-                <a href={row.href} {...(row.external ? { 'data-external': '', rel: 'noopener' } : {})}>
-                  {inner}
-                </a>
-              ) : (
-                <div class="l-static">{inner}</div>
-              )}
-              {row.preview && (
-                <Image
-                  class="l-preview"
-                  src={previews[row.preview]}
-                  alt=""
-                  width={600}
-                  height={375}
-                  fit="cover"
-                  position="top"
-                  loading="lazy"
-                  aria-hidden="true"
-                />
-              )}
-            </li>
-          );
-        })
+            </a>
+            <Image
+              class="l-preview"
+              src={previews[row.preview]}
+              alt=""
+              width={600}
+              height={375}
+              fit="cover"
+              position="top"
+              loading="lazy"
+              aria-hidden="true"
+            />
+          </li>
+        ))
       }
     </ol>
   </div>
@@ -60,12 +47,10 @@ const figures = { linklens: LinkLensFigure, echelon: EchelonFigure, ulpf: UlpfFi
   {
     cases.map((c) => {
       const Figure = figures[c.id as keyof typeof figures];
-      return Figure ? (
+      return (
         <CaseStudy study={c}>
           <Figure />
         </CaseStudy>
-      ) : (
-        <CaseStudy study={c} />
       );
     })
   }
@@ -80,8 +65,7 @@ const figures = { linklens: LinkLensFigure, echelon: EchelonFigure, ulpf: UlpfFi
     position: relative;
   }
 
-  .ledger a,
-  .l-static {
+  .ledger a {
     display: grid;
     grid-template-columns: 1fr 1fr auto;
     align-items: baseline;
@@ -115,30 +99,9 @@ const figures = { linklens: LinkLensFigure, echelon: EchelonFigure, ulpf: UlpfFi
     color: var(--muted);
   }
 
-  .l-static {
-    color: var(--muted);
-  }
-
-  .l-static .l-name {
-    font-weight: 400;
-    text-decoration: none;
-  }
-
-  .ledger a[data-external]::after {
-    content: none;
-  }
-
-  .ledger a[data-external] .l-name::after {
-    content: '\2197';
-    margin-left: 0.25em;
-    font-size: 0.8em;
-    font-weight: 400;
-  }
-
   /* Hovering one row quiets the others. */
   @media (hover: hover) {
-    .ledger:has(a:hover) a:not(:hover),
-    .ledger:has(a:hover) .l-static {
+    .ledger:has(a:hover) a:not(:hover) {
       color: var(--muted);
     }
 
@@ -157,7 +120,7 @@ const figures = { linklens: LinkLensFigure, echelon: EchelonFigure, ulpf: UlpfFi
       display: block;
       position: absolute;
       top: 0;
-      left: calc(100% + 64px);
+      left: calc(100% + var(--col-gap));
       width: 300px;
       height: auto;
       aspect-ratio: 16 / 10;
@@ -178,8 +141,7 @@ const figures = { linklens: LinkLensFigure, echelon: EchelonFigure, ulpf: UlpfFi
   }
 
   @media (max-width: 640px) {
-    .ledger a,
-    .l-static {
+    .ledger a {
       grid-template-columns: 1fr auto;
       row-gap: 2px;
       min-height: 52px;

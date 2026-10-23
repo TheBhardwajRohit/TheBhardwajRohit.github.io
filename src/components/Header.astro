@@ -7,14 +7,10 @@ import { person } from '../data/site.ts';
   <nav aria-label="Primary">
     <ul>
       <li><a href="/#work">Work</a></li>
-      <li class="optional"><a href="/#recognition">Recognition</a></li>
+      <li class="optional"><a href="/#record">Record</a></li>
       <li><a href="/#contact">Contact</a></li>
       <li><a href="/resume/">Resume</a></li>
     </ul>
-    <button class="palette-button" type="button" data-palette-open aria-haspopup="dialog" aria-controls="palette">
-      <span class="sr-only">Open the command menu</span>
-      <kbd data-mod-key>Ctrl</kbd><kbd>K</kbd>
-    </button>
   </nav>
 </header>
 
@@ -40,12 +36,6 @@ import { person } from '../data/site.ts';
     text-decoration-color: currentColor;
   }
 
-  nav {
-    display: flex;
-    align-items: center;
-    gap: clamp(16px, 2.2vw, 32px);
-  }
-
   ul {
     display: flex;
     gap: clamp(16px, 2.2vw, 28px);
@@ -63,29 +53,6 @@ import { person } from '../data/site.ts';
     color: var(--ink);
   }
 
-  .palette-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    min-height: 36px;
-    padding: 0 10px;
-    border: 1px solid var(--rule); /* taste-skill-ignore: 1px rule by brief, keyboard hint control */
-    border-radius: var(--radius);
-    background: transparent;
-    color: var(--muted);
-    transition: color 160ms var(--ease), border-color 160ms var(--ease), background-color 160ms var(--ease);
-  }
-
-  .palette-button:hover {
-    color: var(--ink);
-    border-color: var(--muted);
-    background: var(--surface);
-  }
-
-  kbd {
-    font-size: 0.8125rem;
-  }
-
   @media (max-width: 640px) {
     .optional {
       display: none;
@@ -93,12 +60,6 @@ import { person } from '../data/site.ts';
 
     ul {
       gap: 16px;
-    }
-  }
-
-  @media (max-width: 640px), (hover: none) {
-    .palette-button {
-      display: none;
     }
   }
 
